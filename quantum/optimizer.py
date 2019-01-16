@@ -15,12 +15,11 @@ class Minimizer(object):
     def energy_gd(self, dens, V, mu):
         _, n_points = dens.shape
         denst = self.transformer.transform(dens)
-        dEkt = (n_points-1) * self.estimator.predict_gradient(denst)[0]
-        Vt = self.transformer.transform_gradient(V)[0]
-        project_gd = dEkt + Vt - mu
-        return self.transformer.inverse_transform_gradient(project_gd[np.newaxis, :])[0]
+        dEkt = (n_points-1) * self.estimator.predict_gradient(denst)
+        dEk = self.transformer.inverse_transform_gradient(dEkt)[0]
+        return dEk + V - mu
 
-    def run(self, dens_init, V, mu, N, eta=1e-2, err=1e-4, maxiters=1000, verbose=False):
+    def run(self, dens_init, V, mu, N, eta=1e-3, err=1e-2, maxiters=1000, verbose=False):
         dens_init, V = check_array(dens_init), check_array(V)
 
         E0 = self.energy(dens_init, V, mu, N)
