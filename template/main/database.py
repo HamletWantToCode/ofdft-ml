@@ -3,8 +3,9 @@
 import numpy as np
 from mpi4py import MPI
 import pickle
-from MLEK.main.utils import simple_potential_gen
-from MLEK.main.solver import solver
+
+from quantum.utils import simple_potential_gen
+from quantum.solver import solver
 
 NSAMPLES = 1000
 LOW_V0 = 5

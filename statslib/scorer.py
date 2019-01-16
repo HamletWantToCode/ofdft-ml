@@ -24,8 +24,6 @@ class _PredictScorer(_BaseScorer):
         y_pred = estimator.predict(X)
         dyt_pred = estimator.predict_gradient(X)
         dy_pred = estimator.named_steps['reduce_dim'].inverse_transform_gradient(dyt_pred)
-        dyt_true = estimator.named_steps['reduce_dim'].transform_gradient(dy_true)
-        dy_true = estimator.named_steps['reduce_dim'].inverse_transform_gradient(dyt_true)
         if sample_weight is not None:
             return self._sign * self._score_func(y_true, y_pred,
                                                  sample_weight=sample_weight,

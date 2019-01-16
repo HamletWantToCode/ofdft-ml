@@ -23,18 +23,15 @@ def solver(nk, nbasis, hamiton_mat, occ=1, debug=False):
         # compute mu
         if ki == 0:
             bottom = En_k[0]         # set the minimum of band energy to 0 !
-        if ki == (nk-1):
             top = En_k[0]
         # compute electron density
         # compute kinetic energy
         num_mat_eigspace = np.zeros((nbasis, nbasis))
-        num_mat_eigspace[0, 0] = 1
-        # for i in range(nbasis):
-        #     if (i+1) <= occ*nk:
-        #         num_mat_eigspace[i, i] = 1
-        #     else:
-        #         mu = En_k[i-1] - b
-        #         break
+        for i in range(occ):
+            num_mat_eigspace[i, i] = 1
+            if En_k[i] > top:
+                top = En_k[i]
+
         density_mat_kspace = Uq_k @ (num_mat_eigspace @ (Uq_k.T).conj())
 
         density_k = np.zeros(nbasis, dtype=np.complex64)

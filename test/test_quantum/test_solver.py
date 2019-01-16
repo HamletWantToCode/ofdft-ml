@@ -16,16 +16,18 @@ def params_gen(nbasis, V0):
     return hamilton_mat, Vq
 
 ## Thomas-Fermi test
+occ = 1
 hamilton_mat, Vq = params_gen(nbasis, 0)
-Ek_compute, densq, mu, En = solver(nk, nbasis, hamilton_mat, debug=True)
+Ek_compute, densq, mu, En = solver(nk, nbasis, hamilton_mat, occ, debug=True)
 assert densq[0].real == 1, print('electron number incorret')
-Ek_TF = (np.pi**2/6)*1**3
-assert abs(Ek_compute-Ek_TF) < 0.1, print('error in kinetic energy computation')
+Ek_TF = (np.pi**2/6)*(occ**3)
+assert abs(Ek_compute-Ek_TF) < 10.0/nk, print('error in kinetic energy computation')
 fig1 = plt.figure()
 ax1 = fig1.gca()
 k_points = np.linspace(0, np.pi, nk)
-for i in range(4):
+for i in range(3):
     ax1.plot(k_points, En.T[i], 'b')
+ax1.axhline(mu, 0, np.pi, color='r', linestyle='--')
 ax1.set_xlabel('k')
 ax1.set_ylabel('E(k)')
 plt.savefig('test/test_quantum/free_e_band.png')
