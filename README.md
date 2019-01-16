@@ -1,1 +1,1 @@
-# ofdft-ml
+# OFDFT-ML 
