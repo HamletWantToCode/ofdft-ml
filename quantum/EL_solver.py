@@ -1,26 +1,24 @@
 import numpy as np 
 from sklearn.utils import check_array
 
-class Minimizer(object):
+class EulerSolver(object):
     def __init__(self, ml_model):
-        self.transformer = ml_model.named_steps['reduce_dim']
-        self.estimator = ml_model.named_steps['regressor']
+        self.tr_mat = ml_model.named_steps['reduce_dim'].tr_mat_
+        self.estimator = ml_model
 
     def energy(self, dens, V, mu, N):
         _, n_points = dens.shape
-        denst = self.transformer.transform(dens)
-        Ek = self.estimator.predict(denst)[0]
-        return Ek + np.sum((V[0] - mu)*dens[0])*(1.0/n_points) + mu*N 
+        Ek = self.estimator.predict(dens)[0]
+        return Ek + np.sum((V - mu)*dens[0])*(1.0/n_points) + mu*N 
 
     def energy_gd(self, dens, V, mu):
         _, n_points = dens.shape
-        denst = self.transformer.transform(dens)
-        dEkt = (n_points-1) * self.estimator.predict_gradient(denst)
-        dEk = self.transformer.inverse_transform_gradient(dEkt)[0]
+        dEkt = self.estimator.predict_gradient(dens)[0]
+        dEk = dEkt @ self.tr_mat.T
         return dEk + V - mu
 
-    def run(self, dens_init, V, mu, N, eta=1e-3, err=1e-2, maxiters=1000, verbose=False):
-        dens_init, V = check_array(dens_init), check_array(V)
+    def run(self, dens_init, V, mu, N, eta=0.1, err=1e-8, maxiters=1000, verbose=False):
+        dens_init = check_array(dens_init)
 
         E0 = self.energy(dens_init, V, mu, N)
         n = 1
@@ -28,6 +26,7 @@ class Minimizer(object):
             gd = self.energy_gd(dens_init, V, mu)
             dens = dens_init - eta*gd
             E1 = self.energy(dens, V, mu, N)
+            assert E1 < E0, print('In gradient descent, E should decrease in each step')
             dens_init = dens
             if verbose and (n%10==0):
                 print('Previous E0=%.5f, After %d iteration, E1=%.5f, |E|=%.5f' %(E0, n, E1, abs(E1-E0)))
@@ -37,5 +36,7 @@ class Minimizer(object):
             E0 = E1
             n += 1
             if n > maxiters:
-                raise StopIteration('exceed maximum iteration number !')
+                print('loop exceed')
+                break
+                # raise StopIteration('exceed maximum iteration number !')
         return dens_init[0]

@@ -22,11 +22,12 @@ class KernelRidge(BaseEstimator, RegressorMixin):
     cond_:
     coef_:
     """
-    def __init__(self, C=1e-10, gamma=1e-3, kernel=rbf_kernel, kernel_gd=None):
+    def __init__(self, C=1e-10, gamma=1e-3, kernel=rbf_kernel, kernel_gd=None, kernel_hessian=None):
         self.gamma = gamma
         self.C = C
         self.kernel = kernel
         self.kernel_gd = kernel_gd
+        self.kernel_hessian = kernel_hessian
 
     def fit(self, X, y, dy=None):
         """
@@ -81,3 +82,8 @@ class KernelRidge(BaseEstimator, RegressorMixin):
         dy_pred = self.kernel_gd(self.gamma, X, self.X_fit_) @ self.coef_
         return dy_pred
     
+    # def predict_hessian(self, X):
+    #     assert self.kernel_hessian is not None, print('need to specify hessian of kernel !')
+    #     X = check_array(X)
+    #     ddy_pred = self.kernel_hessian(self.gamma, X, self.X_fit_) @ self.coef_
+    #     return ddy_pred
