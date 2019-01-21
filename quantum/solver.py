@@ -5,7 +5,26 @@ from scipy.linalg import eigh
 
 def solver(nk, nbasis, hamiton_mat, occ=1, debug=False):
     """
-    fix electron number equals 1
+    Solving for groundstate electron density & kinetic energy given a hamiltonian matrix
+    writen in k-space.
+
+    :param nk: number of k points
+    :param nbasis: number of plane wave basis, dimension of hamilton matrix
+    :param occ: occupation number, integer
+    :param debug: default False, swich on to record the energy band
+
+    :return T: a tuple contains electron kinetic energy per cell & groundstate electron density in k space
+               & chemical potential
+
+    Examples::
+
+    >>> from quantum.solver import solver
+    >>> import numpy as np
+    >>> n_kpoints = 100
+    >>> n_basis = 10
+    >>> sample_hamilton_mat = np.zeros((n_basis, n_basis), dtype=np.complex64)
+    >>> np.fill_diagonal(sample_hamilton_mat[1:, :-1], -5+0j)
+    >>> T, densq, mu = solver(n_kpoints, n_basis, sample_hamilton_mat)
     """
     kpoints = np.linspace(0, np.pi, nk)
     # build and solve eigenvalue problem

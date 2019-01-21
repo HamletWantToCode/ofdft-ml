@@ -1,4 +1,4 @@
-# extended pipline 
+# extended pipline
 
 from sklearn.pipeline import Pipeline, _fit_transform_one
 from sklearn.base import clone
@@ -7,9 +7,29 @@ from sklearn.utils.validation import check_memory
 from sklearn.utils.metaestimators import if_delegate_has_method
 
 class MyPipe(Pipeline):
+    """
+    Pipline is used to encapsulate transformers and estimator
+
+    :param steps: list of tuples, e.g. [('transform', pca), ('estimator', krr)]
+
+    :param memory: None, str or object with the joblib.Memory interface, optional, used to cache the fitted transformers of the pipeline.
+
+    Examples::
+
+    >>> from statslib.pipline import MyPipe
+    >>> from statslib.pca import PrincipalComponentAnalysis
+    >>> from statslib.kernel_ridge import KernelRidge
+    >>> import numpy as np
+    >>> pca = PrincipalComponentAnalysis()
+    >>> krr = KernelRidge()
+    >>> pipe = Mypipe([('PCA', pca), ('KRR', krr)])
+    >>> X = np.random.rand(10, 5)
+    >>> y = np.random.rand(10)
+    >>> pipe.fit(X, y)
+    """
     def __init__(self, steps, memory=None):
         super().__init__(steps, memory)
-    
+
     @if_delegate_has_method(delegate='_final_estimator')
     def predict_gradient(self, X, **predict_params):
         Xt = X
@@ -83,25 +103,22 @@ class MyPipe(Pipeline):
         return Xt, dyt, fit_params_steps[self.steps[-1][0]]
 
     def fit(self, X, y=None, dy=None, **fit_params):
-        """Fit the model
+        """
         Fit all the transforms one after the other and transform the
         data, then fit the transformed data using the final estimator.
-        Parameters
-        ----------
-        X : iterable
-            Training data. Must fulfill input requirements of first step of the
-            pipeline.
-        y : iterable, default=None
-            Training targets. Must fulfill label requirements for all steps of
-            the pipeline.
-        **fit_params : dict of string -> object
-            Parameters passed to the ``fit`` method of each step, where
-            each parameter name is prefixed such that parameter ``p`` for step
-            ``s`` has key ``s__p``.
-        Returns
-        -------
-        self : Pipeline
-            This estimator
+
+        :param X: iterable, training data. Must fulfill input requirements of first step of the pipeline.
+
+        :param y: iterable, default=None, training targets. Must fulfill label requirements for all steps of the pipeline.
+
+        :param dy: iterable, default=None, training function gradient
+
+        :param **fit_params: dict of string -> object\
+                             parameters passed to the ``fit`` method of each step, where\
+                             each parameter name is prefixed such that parameter ``p`` for step\
+                             ``s`` has key ``s__p``.
+
+        :return self: Pipeline, this estimator
         """
         Xt, dyt, fit_params = self._fit(X, y, dy, **fit_params)
         if self._final_estimator is not None:

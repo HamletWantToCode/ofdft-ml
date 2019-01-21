@@ -6,12 +6,12 @@ from itertools import product
 from traceback import format_exception_only
 from collections import defaultdict
 from functools import partial
-import numpy as np 
+import numpy as np
 from scipy.stats import rankdata
 
 from sklearn.base import clone, is_classifier
 from sklearn.utils import safe_indexing
-from sklearn.utils.metaestimators import if_delegate_has_method 
+from sklearn.utils.metaestimators import if_delegate_has_method
 from sklearn.utils.validation import indexable, check_is_fitted, _num_samples
 from sklearn.utils.fixes import MaskedArray
 from sklearn.utils.deprecation import DeprecationDict
@@ -22,6 +22,9 @@ from sklearn.model_selection._validation import _index_param_value, _aggregate_s
 from sklearn.metrics.scorer import _check_multimetric_scoring
 
 class MyGridSearchCV(BaseSearchCV):
+    """
+
+    """
     def __init__(self, estimator, param_grid, scoring=None, fit_params=None,
                  n_jobs=None, iid='warn', refit=True, cv='warn', verbose=0,
                  pre_dispatch='2*n_jobs', error_score='raise-deprecating',
@@ -122,7 +125,7 @@ class MyGridSearchCV(BaseSearchCV):
                               n_splits, n_candidates, n_candidates * n_splits))
 
                 out = parallel(delayed(_fit_and_score)(clone(base_estimator),
-                                                       X, y, dy, 
+                                                       X, y, dy,
                                                        train=train, test=test,
                                                        parameters=parameters,
                                                        **fit_and_score_kwargs)

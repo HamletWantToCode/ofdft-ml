@@ -1,36 +1,36 @@
 # Principal Component Analysis
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
-import numpy as np 
+import numpy as np
 
 class PrincipalComponentAnalysis(BaseEstimator, TransformerMixin):
-    """ 
-    Parameters
-    ----------
-    n_components:
+    """
+    Embedding the high dimensional data to a low dimensional hyperplane,
 
-    Attributes
-    ----------
-    n_features_ : int
-        The number of features of the data passed to :meth:`fit`.
+    :param n_components: int, desired dimension for reduction
+
+    Examples::
+
+    >>> from statslib.pca import PrincipalComponentAnalysis as PCA
+    >>> import numpy as np
+    >>> X = np.random.rand(10, 8)
+    >>> pca = PCA()
+    >>> Xt = PCA.fit_transform(X)
+    >>> assert Xt.shape[1]==2
+
     """
     def __init__(self, n_components=2):
         self.n_components = n_components
 
     def fit(self, X, y=None):
         """
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            The training input samples.
-        y : None
-            There is no need of a target in a transformer, yet the pipeline API
-            requires this parameter.
+        fit the original data, compute transformation matrix.
 
-        Returns
-        -------
-        self : object
-            Returns self.
+        :param X: array, shape (n_samples, n_features), feature of training data
+
+        :param y: None, There is no need of a target in a transformer, yet the pipeline API requires this parameter.
+
+        :return self: object
         """
         X = check_array(X)
         mean = np.mean(X, axis=0)
@@ -43,17 +43,12 @@ class PrincipalComponentAnalysis(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        """ 
-        Parameters
-        ----------
-        X : {array-like, sparse-matrix}, shape (n_samples, n_features)
-            The input samples.
+        """
+        transform the feature from original space to a low dimensional space
 
-        Returns
-        -------
-        X_transformed : array, shape (n_samples, n_features)
-            The array containing the element-wise square roots of the values
-            in ``X``.
+        :param X: array, shape (n_samples, n_features), feature in original space
+
+        :return tr_X: array, shape (n_samples, n_components), feature in low dimensional space
         """
         X = check_array(X)
         # Check that the input is of the same shape as the one passed
@@ -65,21 +60,50 @@ class PrincipalComponentAnalysis(BaseEstimator, TransformerMixin):
         return tr_X
 
     def transform_gradient(self, dy):
+        """
+        apply same transformation on the function gradient, transform it into the low dimensional space
+
+        :param dy: array, shape (n_samples, n_features), function gradient in original space
+
+        :return tr_dy: array, shape (n_samples, n_components), transformed function gradient
+        """
         dy = check_array(dy)
         if dy.shape[1] != self.n_features_:
                 raise ValueError('Shape of input is different from what was seen'
-                                'in `fit`') 
+                                'in `fit`')
         tr_dy = dy @ self.tr_mat_
         return tr_dy
 
     def inverse_transform(self, Xt):
+        """
+        apply inverse transform, and transform features back to the original space
+
+        :param Xt: array, shape (n_samples, n_components), feature in low dimensional space
+
+        :return X: array, shape (n_samples, n_features), feature in original space
+        """
         X = Xt @ self.tr_mat_.T + self.mean_
         return X
 
     def inverse_transform_gradient(self, dyt):
-        dy = dyt @ self.tr_mat_.T 
+        """
+        transform the gradient back to the original space
+
+        :param dyt: array, shape (n_samples, n_components), gradient in low dimensional space
+
+        :return dy: array, shape (n_samples, n_features), gradient in original space
+        """
+        dy = dyt @ self.tr_mat_.T
         return dy
 
     def fit_transform(self, X, y=None):
+        """
+        combine the ``fit`` and ``transform`` method
+
+        :param X: array, shape (n_samples, n_features)
+        :param y: None
+
+        :return Xt: array, shape (n_samples n_components)
+        """
         self.fit(X, y)
         return self.transform(X)

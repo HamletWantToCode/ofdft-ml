@@ -1,17 +1,38 @@
 import numpy as np
 
 # simulate periodic potential
-def simple_potential_gen(nbasis, low_V0, high_V0, low_Phi0, high_Phi0, random_state):
+def simple_potential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, random_state):
+    """
+    Generate periodic potential as sum of cosin functions, differ in their
+    magnitude and phase.
+
+    :param nbasis: number of plane wave basis, related to the size of hamilton matrix
+    :param n_cos: number of cosin function used
+    :param low_V0: lower bound for cosin function's magnitude
+    :param high_V0: upper bound for cosin function's magnitude
+    :param random_state: an integer as random seed
+
+    :return: Generator generates hamitonian matrix and potential k-components in each iteration
+
+    Examples::
+
+    >>> from quantum.utils import simple_potential_gen
+    >>> n_basis = 10
+    >>> low_V0, high_V0 = 3, 5
+    >>> low_phi0, high_phi0 = -0.1, 0.1
+    >>> params_gen = simple_potential_gen(n_basis, low_V0, high_V0, low_phi0, high_phi0, random_state=9302)
+    >>> hamilton_mat, Vq = next(params_gen)
+    """
     R = np.random.RandomState(random_state)
     while True:
         Vq = np.zeros(nbasis, dtype=np.complex64)
         hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)
-        
-        V0 = R.uniform(low_V0, high_V0, 3)
-        Phi0 = R.uniform(low_Phi0, high_Phi0, 2)
+
+        V0 = R.uniform(low_V0, high_V0, n_cos)
+        Phi0 = R.uniform(low_Phi0, high_Phi0, n_cos)
 
         Vq[0] = -np.sum(V0)
-        Vq[1] = 0.5*V0[0] + 0.5*V0[1]*np.exp(2j*np.pi*Phi0[0]) + 0.5*V0[2]*np.exp(2j*np.pi*Phi0[1])
+        Vq[1] = 0.5*(V0 @ np.exp(2j*np.pi*Phi0))
         np.fill_diagonal(hamilton_mat[1:, :-1], Vq[1].conj())
 
         yield(hamilton_mat, Vq)
