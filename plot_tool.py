@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import *
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec 
 
-def plot_distance(distance_data, out_dir='../example_demo', **hist_params):
+def plot_distance(distance_data, out_dir='.', **hist_params):
     fig = plt.figure()
     ax = fig.gca()
     n, bins_edge, patches = ax.hist(distance_data, density=True, **hist_params)
@@ -19,7 +19,7 @@ def plot_distance(distance_data, out_dir='../example_demo', **hist_params):
     ax.set_ylabel('fraction')
     plt.savefig('/'.join([out_dir, 'pairwise_distance.png']))
 
-def plot_principal_components(data, out_dir='../example_demo', scatter_params={}, hist_params={}):
+def plot_principal_components(data, out_dir='.', scatter_params={}, hist_params={}):
     fig = plt.figure(figsize=(10, 5))
     original_gs = GridSpec(1, 2, figure=fig)
     ## scatter plot
@@ -49,20 +49,20 @@ def plot_principal_components(data, out_dir='../example_demo', scatter_params={}
     fig.text(0.51, 0.5, 'fraction', va='center', rotation='vertical')
     plt.savefig('/'.join([out_dir, 'principal_components.png']))
 
-def plot_real_space_density(dens_x, out_dir='../example_demo'):
-    n_samples, n_points = dens_x.shape
+def plot_real_grid_data(data_x, out_dir='.'):
+    n_samples, n_points = data_x.shape
     X = np.linspace(0, 1, n_points)
-    dens_x_max = np.amax(dens_x, axis=0)
-    dens_x_min = np.amin(dens_x, axis=0)
+    data_x_max = np.amax(data_x, axis=0)
+    data_x_min = np.amin(data_x, axis=0)
     fig = plt.figure()
     ax = fig.gca()
-    ax.plot(X, dens_x[n_samples//2], 'k')
-    ax.fill_between(X, dens_x_min, dens_x_max, alpha=0.7, edgecolor=None, facecolor='silver')
+    ax.plot(X, data_x[n_samples//2], 'k')
+    ax.fill_between(X, data_x_min, data_x_max, alpha=0.7, edgecolor=None, facecolor='silver')
     ax.set_xlabel('x')
     ax.set_ylabel(r'$\rho(x)$')
     plt.savefig('/'.join([out_dir, 'density.png']))
 
-def plot_prediction(Ek_true, Ek_pred, densx_true, densx_pred, densx_init, out_dir='../example_demo'):
+def plot_prediction(Ek_true, Ek_pred, densx_true, densx_pred, densx_init, out_dir='.'):
     fig = plt.figure(figsize=(9, 4))
     gd = GridSpec(1, 2, figure=fig)
     ## Ek plot

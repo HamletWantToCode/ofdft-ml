@@ -11,6 +11,7 @@ Welcome to OFDFT-ML's documentation!
    :caption: Contents:
 
    introduction
+   overview
    tutorial
    api
 
