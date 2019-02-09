@@ -1,0 +1,6 @@
+n_basis=10
+n_kpoints=100
+n_cosin=3
+Phi0=-0.2:0.2
+V0=1:10
+occ=1

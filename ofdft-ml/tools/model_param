@@ -1,0 +1,4 @@
+n_components=2:3:4
+C=-8:-3
+gamma=-4:-2
+ngrid=5

@@ -1,7 +1,26 @@
 import numpy as np
 
-# simulate periodic potential
-def simple_potential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, random_state):
+# finite range potential in x space
+def xpotential_gen(n_points, n_Gauss, low_a, high_a, low_b, high_b, low_c, high_c, random_state):
+    R = np.random.RandomState(random_state)
+    X = np.linspace(0, 1, n_points, endpoint=True)
+    while True:
+        # potential
+        a = R.uniform(low_a, high_a, n_Gauss)
+        b = R.uniform(low_b, high_b, (n_Gauss, 1))
+        c = R.uniform(low_c, high_c, (n_Gauss, 1))
+        Vx = -a @ np.exp(-(X - b)**2/(2*c**2))
+        # hamiltonian matrix
+        H = np.zeros((n_points-2, n_points-2))
+        np.fill_diagonal(H, -2)
+        np.fill_diagonal(H[1:, :-1], 1)
+        np.fill_diagonal(H[:-1, 1:], 1)
+        H *= -0.5*(n_points-1)**2
+        H += np.diag(Vx[1:-1])
+        yield(H, Vx)
+
+# periodic potential in k space
+def kpotential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, random_state):
     """
     Generate periodic potential as sum of cosin functions, differ in their
     magnitude and phase.
@@ -36,27 +55,4 @@ def simple_potential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, ra
         np.fill_diagonal(hamilton_mat[1:, :-1], Vq[1].conj())
 
         yield(hamilton_mat, Vq)
-
-# potential generator
-# def potential_gen(nbasis, max_q, low_V0, high_V0, low_mu, high_mu, random_state):
-#     np.random.seed(random_state)
-#     assert max_q > 2
-#     NG = np.arange(2, max_q, 1, 'int')
-#     while True:
-#         nq = np.random.randint(0, max_q-2)      # nq is number of non-zero k components other than 0 and 1 component
-#         if nq == 0:
-#             q_index = np.array([1])
-#         else:
-#             q_index = np.append(np.random.choice(NG, size=nq), 1)
-#         mu = np.random.uniform(low_mu, high_mu)
-#         Vq = np.zeros(nbasis, dtype=np.complex64)
-#         hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)
-#         V0 = np.random.uniform(low_V0, high_V0)
-#         for i in q_index:
-#             theta = np.random.uniform(0, 2*np.pi)
-#             r0 = np.random.rand()
-#             Vq_conj = -V0*r0*(np.cos(theta) - 1j*np.sin(theta))
-#             Vq[i] = Vq_conj.conjugate()
-#             np.fill_diagonal(hamilton_mat[i:, :-i], Vq_conj)
-#         yield (hamilton_mat, Vq, mu)
 
