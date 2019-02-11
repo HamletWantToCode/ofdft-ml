@@ -106,26 +106,27 @@ def main(argv):
               """)
         return 100
     try:
-        opt_vals, args = getopt.getopt(argv, 'hf:', ['help', 'files=', 'params='])
+        opt_vals, args = getopt.getopt(argv, 'hf:', ['help', 'file=', 'params='])
     except getopt.GetoptError as err:
         print(err)
         return usage()
+    if opt_vals[0][0] in ['-h', '--help']: return usage()
     if args[0] == 'proc':
-        for (opt, val) in opt_vals:
-            if opt in ['-h', '--help']: return usage()
-            elif opt in ['-f', '--files']:
-                with open(val, 'rb') as f:
-                    data = pickle.load(f)
-                dens_x = data[:, 1:]
-                density_projection(dens_x)
+        opt, val = opt_vals[0]
+        if opt in ['-f', '--file']:
+            with open(val, 'rb') as f:
+                data = pickle.load(f)
+            dens_x = data[:, 1:]
+            density_projection(dens_x)
+        else:
+            return usage()
     elif args[0] == 'pred':
         mu = 0
         n = 0
         step = 1e-8
         tol = 1e-8
         for (opt, val) in opt_vals:
-            if opt in ['-h', '--help']: return usage()
-            elif opt in ['-f', '--files']:
+            if opt in ['-f', '--file']:
                 fnames = val
                 train_fname, test_fname, estimator_fname = fnames.split(':')
                 with open(train_fname, 'rb') as f:
@@ -145,6 +146,8 @@ def main(argv):
                         elif line[:ii] == 'n': n_electron = int(line[(ii+1):])
                         elif line[:ii] == 'step': step = float(line[(ii+1):])
                         elif line[:ii] == 'tol': tol = float(line[(ii+1):])
+            else:
+                return usage()
         # Ek prediction
         pred_Ek = estimator.predict(test_densx)
         # density optimization
