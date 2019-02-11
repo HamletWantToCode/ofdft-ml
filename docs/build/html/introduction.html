@@ -1,0 +1,295 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="qmpackage.html" />
+    <link rel="prev" title="Welcome to OFDFT-ML’s documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qmpackage.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlpackage.html">Machine learning</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>OFDFT-ML is intended to use machine learning (ML) techniques to leverage the original Hohenberg-Kohn
+density function theory (DFT).</p>
+<p>In quantum mechanics, the observables of quantum system can be represented as a unique functional
+of the groundstate electron density <span class="math notranslate nohighlight">\(n\)</span> :</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{O}=\langle\Psi_{[n]}|\hat{\mathcal{O}}|\Psi_{[n]}\rangle\equiv\mathcal{O}[n]\]</div>
+<p>traditionally, we will first solve for <span class="math notranslate nohighlight">\(\Psi\)</span> , which is the groundstate wavefunction of
+the quantum system, and compute the groundstate electron density as the inner product of <span class="math notranslate nohighlight">\(\Psi\)</span> .
+This approach requires us to use the concept of electron orbitals to formulate the wavefunction, and
+the computation complexity of resulting algorithm is …… . Another approach is offered by the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Density_functional_theory#Hohenberg%E2%80%93Kohn_theorems">Hohenberg-Kohn theorem</a> ,
+which indicate that the total energy of the quantum system is also a unique functional of the electron density,
+and we can solve for groundstate electron density by finding the global minimum of the total energy functional.</p>
+<p>However, it’s hard to write the explicit form of kinetic energy functional w.r.t the electron density. Unlike the
+exchange correlation energy, which only account for 3% of the total energy, kinetic energy accounts for 50% of the
+total energy, any error in estimating the kinetic energy will seriously affects the total energy. Therefore, to leverage
+the orbital-free nature of Hohenberg-Kohn DFT, it’s crutial for us to estimate the kinetic energy correctly.</p>
+<p>The existing paradiagms for studying OFDFT are Thomas-Fermi theory and it’s corrections, it’s intuitive and motivated
+by physics law but fail to answer the questions of …… . If we think about functional analysis and treate the electron
+density as a vector in function space, the problem of estimating the kinetic energy functional can be regarded as a
+multivariate regression problem, but unlike the textbook level regression, here we may need to deal with hundred or thousand
+of variables, and the prior knowledge about the fitting function is limited. Machine learning is popular for processing
+data in astrophysics and particle physics, where data is high dimensional in nature. Therefore, we considered machine
+learning as a promising candidate for realizing OFDFT. Introducing machine learning technique to DFT study is credited to Professor Kieron Burke, in his pioneering paper in 2012 (<a class="footnote-reference" href="#id3" id="id1">[1]</a>), he consider textbook instance, electron in a finite well, and effectively learn the kinetic energy functional using kernel ridge regression.</p>
+<p>Apart from atomic and molecular physics, DFT is also widely used in material simulations. To simplify the problem, we consider
+to estimate the kinetic energy functional of electron in 1D periodic lattice, and ignore the interaction between electrons. The
+learning dataset is generated by <strong>quantum</strong> module inside the OFDFT-ML package, there are two major parts of <strong>quantum</strong> module,
+first is a potential generator, which will generate 1D periodic potential of random shape and strength. The other is a Schrodinger
+equation solver, which solves for kinetic energy and groundstate electron density of the 1D lattice.</p>
+<p>After collecting groundstate electron density and kinetic into a database, we will set the electron density (in real space grid)
+as features, and kinetic energy as target, split the whole database into training and testing dataset, then construct our
+machine learning model on the training dataset, then test the performance on the testing dataset.</p>
+<p>The <strong>statslib</strong> module provides methods needed to build a machine learning workflow. Our workflow contains two successive steps,
+the first is a dimension reduction algorithm, it’s difficult to find the relation between target and features if the feature space is
+high dimensional. High dimensional data tends to be sparse in nature, which is known as <a class="reference external" href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> (<a class="footnote-reference" href="#id4" id="id2">[2]</a>). In this case, we use principal component analysis (PCA) to model the original feature
+space as a low dimensional hyperplane. After transforming the original data into a low dimensional representation, we will fit a
+regression model on the data, we decided to use kernel machines here, since they are data driven and the fitted functional is able
+to be writen in a closed form:</p>
+<div class="math notranslate nohighlight">
+\[T_{ML}[n] = \sum_{i=1}^N\alpha_i K(n, n_i)\]</div>
+<p>To achieve the OFDFT, we need to solve Euler-Lagrangian (EL) equation for groundstate electron density of a given external potential,
+and this requires us to find the functional derivative of kinetic energy. The machine learned functional derivative can be represented
+as:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta T_{ML}[n]}{\delta n(x)}=\sum_{i=1}^N\alpha_i\frac{\delta K(n, n_i)}{\delta n(x)}\]</div>
+<p>Since we were fitting the functional in a low dimensional feature space, we need to transform this derivative back to the original
+space. A nice thing about PCA is that it’s linear transformation, therefore, the inverse transform is just the inverse of the
+forward transform.</p>
+<p>The EL equation is known as:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta T_{ML}}{\delta n(x)}+V(x)-\mu=0\]</div>
+<p>and can be solved iteratively using gradient descent method:</p>
+<div class="math notranslate nohighlight">
+\[n^{(t+1)}(x)=n^{(t)}(x)-\epsilon\left(\frac{\delta T_{ML}}{\delta n^{(t)}(x)}+V(x)-\mu\right)\]</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="https://link.aps.org/doi/10.1103/PhysRevLett.108.253002">Finding Density Functionals with Machine Learning</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><a class="reference external" href="https://pdfs.semanticscholar.org/9bfc/f812b249d570823c6a0dff4a4781a40524d1.pdf">The Curse of Dimensionality for Local Kernel Machines</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="qmpackage.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to OFDFT-ML’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

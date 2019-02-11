@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>quantum.solver &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Code API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>quantum.solver</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for quantum.solver</h1><div class="highlight"><pre>
+<span></span><span class="c1"># quantum solver</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">eigh</span>
+
+<div class="viewcode-block" id="solver"><a class="viewcode-back" href="../../api.html#quantum.solver.solver">[docs]</a><span class="k">def</span> <span class="nf">solver</span><span class="p">(</span><span class="n">nk</span><span class="p">,</span> <span class="n">nbasis</span><span class="p">,</span> <span class="n">hamiton_mat</span><span class="p">,</span> <span class="n">occ</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solving for groundstate electron density &amp; kinetic energy given a hamiltonian matrix</span>
+<span class="sd">    writen in k-space.</span>
+
+<span class="sd">    :param nk: number of k points</span>
+<span class="sd">    :param nbasis: number of plane wave basis, dimension of hamilton matrix</span>
+<span class="sd">    :param occ: occupation number, integer</span>
+<span class="sd">    :param debug: default False, swich on to record the energy band</span>
+
+<span class="sd">    :return T: a tuple contains electron kinetic energy per cell &amp; groundstate electron density in k space</span>
+<span class="sd">               &amp; chemical potential</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">    &gt;&gt;&gt; from quantum.solver import solver</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; n_kpoints = 100</span>
+<span class="sd">    &gt;&gt;&gt; n_basis = 10</span>
+<span class="sd">    &gt;&gt;&gt; sample_hamilton_mat = np.zeros((n_basis, n_basis), dtype=np.complex64)</span>
+<span class="sd">    &gt;&gt;&gt; np.fill_diagonal(sample_hamilton_mat[1:, :-1], -5+0j)</span>
+<span class="sd">    &gt;&gt;&gt; T, densq, mu = solver(n_kpoints, n_basis, sample_hamilton_mat)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kpoints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">nk</span><span class="p">)</span>
+    <span class="c1"># build and solve eigenvalue problem</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">En</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nk</span><span class="p">,</span> <span class="n">nbasis</span><span class="p">))</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ki</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kpoints</span><span class="p">):</span>
+        <span class="n">kinetic_term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">nbasis</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbasis</span><span class="p">)])</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">hamiton_mat</span><span class="p">,</span> <span class="n">kinetic_term</span><span class="p">)</span>
+        <span class="n">En_k</span><span class="p">,</span> <span class="n">Uq_k</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">hamiton_mat</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite_b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">En</span><span class="p">[</span><span class="n">ki</span><span class="p">]</span> <span class="o">=</span> <span class="n">En_k</span>
+        <span class="c1"># compute mu</span>
+        <span class="k">if</span> <span class="n">ki</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">En_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="c1"># set the minimum of band energy to 0 !</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">En_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># compute electron density</span>
+        <span class="c1"># compute kinetic energy</span>
+        <span class="n">num_mat_eigspace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">nbasis</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ</span><span class="p">):</span>
+            <span class="n">num_mat_eigspace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">En_k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">top</span><span class="p">:</span>
+                <span class="n">top</span> <span class="o">=</span> <span class="n">En_k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">density_mat_kspace</span> <span class="o">=</span> <span class="n">Uq_k</span> <span class="o">@</span> <span class="p">(</span><span class="n">num_mat_eigspace</span> <span class="o">@</span> <span class="p">(</span><span class="n">Uq_k</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+
+        <span class="n">density_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+        <span class="n">T_k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbasis</span><span class="p">):</span>
+            <span class="n">density_k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">density_mat_kspace</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">T_k</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">k</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">nbasis</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">density_mat_kspace</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">T</span> <span class="o">+=</span> <span class="n">T_k</span>
+        <span class="n">density</span> <span class="o">+=</span> <span class="n">density_k</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">top</span> <span class="o">-</span> <span class="n">bottom</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">T</span><span class="o">/</span><span class="n">nk</span><span class="p">,</span> <span class="n">density</span><span class="o">/</span><span class="n">nk</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">En</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">T</span><span class="o">/</span><span class="n">nk</span><span class="p">,</span> <span class="n">density</span><span class="o">/</span><span class="n">nk</span><span class="p">,</span> <span class="n">mu</span></div>
+
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

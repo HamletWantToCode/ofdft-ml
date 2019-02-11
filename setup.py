@@ -1,17 +1,24 @@
 from setuptools import setup, find_packages
 
+from ofdft_ml import __version__
+
 setup(
     name = 'ofdft-ml',
-    version = '0.01',
+    version = __version__,
     keywords=['OFDFT', 'ML'],
     description = 'orbital free density functional theory empowered by machine learning',
     license = 'MIT License',
     url = 'https://github.com/HamletWantToCode/ofdft-ml.git',
     author = 'Hongbin Ren',
     author_email = 'hongbinrenscu@outlook.com',
-    package_dir = {'': 'src'},
-    packages = find_packages(where='src'),
-    py_modules = ['database', 'k2x', 'data_process', 'model_selection', 'ofdft-ml.ext_math'],
+    packages = find_packages(),
+    py_modules = ['ofdft_ml.ext_math'],
+    scripts = [
+               'tools/data_process.py', 
+               'tools/database.py', 
+               'tools/k2x.py', 
+               'tools/model_selection.py'
+               ],
     platforms = 'any',
     install_requires = ['scikit-learn==0.19.1',
                         'numpy==1.13.3',

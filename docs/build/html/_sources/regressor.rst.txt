@@ -1,0 +1,5 @@
+Regression
+==========
+
+.. math::
+    f(x)=\sum_{i=1}^N\,\alpha_iK(x, x_i)

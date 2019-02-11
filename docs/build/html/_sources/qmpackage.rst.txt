@@ -1,0 +1,16 @@
+Examples
+================
+
+Generating periodic potential & hamiltonian
+-------------------------------------------
+
+.. math::
+   \begin{eqnarray}
+   V(x)=\sum_{i=1}^3V_i\left(\cos^2(\pi (x+\phi_i))-1\right)\\
+   H_{ij}(k)=\frac{(k+G_i)^2}{2}\delta_{ij}+\hat{V}(G_i-G_j)
+   \end{eqnarray}
+
+.. code::
+   
+
+

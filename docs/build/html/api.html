@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Code API &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-quantum.utils">Quantum module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statslib-module">Statslib module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Code API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="code-api">
+<h1>Code API<a class="headerlink" href="#code-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-quantum.utils">
+<span id="quantum-module"></span><h2>Quantum module<a class="headerlink" href="#module-quantum.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="quantum.utils.simple_potential_gen">
+<code class="descclassname">quantum.utils.</code><code class="descname">simple_potential_gen</code><span class="sig-paren">(</span><em>nbasis</em>, <em>n_cos</em>, <em>low_V0</em>, <em>high_V0</em>, <em>low_Phi0</em>, <em>high_Phi0</em>, <em>random_state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantum/utils.html#simple_potential_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quantum.utils.simple_potential_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate periodic potential as sum of cosin functions, differ in their
+magnitude and phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nbasis</strong> – number of plane wave basis, related to the size of hamilton matrix</li>
+<li><strong>n_cos</strong> – number of cosin function used</li>
+<li><strong>low_V0</strong> – lower bound for cosin function’s magnitude</li>
+<li><strong>high_V0</strong> – upper bound for cosin function’s magnitude</li>
+<li><strong>random_state</strong> – an integer as random seed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Generator generates hamitonian matrix and potential k-components in each iteration</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">quantum.utils</span> <span class="k">import</span> <span class="n">simple_potential_gen</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_basis</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">low_V0</span><span class="p">,</span> <span class="n">high_V0</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">low_phi0</span><span class="p">,</span> <span class="n">high_phi0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params_gen</span> <span class="o">=</span> <span class="n">simple_potential_gen</span><span class="p">(</span><span class="n">n_basis</span><span class="p">,</span> <span class="n">low_V0</span><span class="p">,</span> <span class="n">high_V0</span><span class="p">,</span> <span class="n">low_phi0</span><span class="p">,</span> <span class="n">high_phi0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">9302</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hamilton_mat</span><span class="p">,</span> <span class="n">Vq</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">params_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="module-quantum.solver"></span><dl class="function">
+<dt id="quantum.solver.solver">
+<code class="descclassname">quantum.solver.</code><code class="descname">solver</code><span class="sig-paren">(</span><em>nk</em>, <em>nbasis</em>, <em>hamiton_mat</em>, <em>occ=1</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantum/solver.html#solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quantum.solver.solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solving for groundstate electron density &amp; kinetic energy given a hamiltonian matrix
+writen in k-space.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nk</strong> – number of k points</li>
+<li><strong>nbasis</strong> – number of plane wave basis, dimension of hamilton matrix</li>
+<li><strong>occ</strong> – occupation number, integer</li>
+<li><strong>debug</strong> – default False, swich on to record the energy band</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return T:</th><td class="field-body"><p class="first last">a tuple contains electron kinetic energy per cell &amp; groundstate electron density in k space
+&amp; chemical potential</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">quantum.solver</span> <span class="k">import</span> <span class="n">solver</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_kpoints</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_basis</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_hamilton_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_basis</span><span class="p">,</span> <span class="n">n_basis</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">sample_hamilton_mat</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">5</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">,</span> <span class="n">densq</span><span class="p">,</span> <span class="n">mu</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">n_kpoints</span><span class="p">,</span> <span class="n">n_basis</span><span class="p">,</span> <span class="n">sample_hamilton_mat</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="statslib-module">
+<h2>Statslib module<a class="headerlink" href="#statslib-module" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="statslib.pca.PrincipalComponentAnalysis">
+<em class="property">class </em><code class="descclassname">statslib.pca.</code><code class="descname">PrincipalComponentAnalysis</code><span class="sig-paren">(</span><em>n_components=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Embedding the high dimensional data to a low dimensional hyperplane,</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_components</strong> – int, desired dimension for reduction</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">statslib.pca</span> <span class="k">import</span> <span class="n">PrincipalComponentAnalysis</span> <span class="k">as</span> <span class="n">PCA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Xt</span> <span class="o">=</span> <span class="n">PCA</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">Xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mi">2</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>fit the original data, compute transformation matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – array, shape (n_samples, n_features), feature of training data</li>
+<li><strong>y</strong> – None, There is no need of a target in a transformer, yet the pipeline API requires this parameter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return self:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>combine the <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">transform</span></code> method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – array, shape (n_samples, n_features)</li>
+<li><strong>y</strong> – None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return Xt:</th><td class="field-body"><p class="first last">array, shape (n_samples n_components)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.inverse_transform">
+<code class="descname">inverse_transform</code><span class="sig-paren">(</span><em>Xt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.inverse_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.inverse_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply inverse transform, and transform features back to the original space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Xt</strong> – array, shape (n_samples, n_components), feature in low dimensional space</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return X:</th><td class="field-body">array, shape (n_samples, n_features), feature in original space</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.inverse_transform_gradient">
+<code class="descname">inverse_transform_gradient</code><span class="sig-paren">(</span><em>dyt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.inverse_transform_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.inverse_transform_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform the gradient back to the original space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dyt</strong> – array, shape (n_samples, n_components), gradient in low dimensional space</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return dy:</th><td class="field-body">array, shape (n_samples, n_features), gradient in original space</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform the feature from original space to a low dimensional space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> – array, shape (n_samples, n_features), feature in original space</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return tr_X:</th><td class="field-body">array, shape (n_samples, n_components), feature in low dimensional space</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.pca.PrincipalComponentAnalysis.transform_gradient">
+<code class="descname">transform_gradient</code><span class="sig-paren">(</span><em>dy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pca.html#PrincipalComponentAnalysis.transform_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pca.PrincipalComponentAnalysis.transform_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply same transformation on the function gradient, transform it into the low dimensional space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dy</strong> – array, shape (n_samples, n_features), function gradient in original space</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return tr_dy:</th><td class="field-body">array, shape (n_samples, n_components), transformed function gradient</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="statslib.kernel_ridge.KernelRidge">
+<em class="property">class </em><code class="descclassname">statslib.kernel_ridge.</code><code class="descname">KernelRidge</code><span class="sig-paren">(</span><em>C=1e-10</em>, <em>gamma=0.001</em>, <em>kernel=&lt;function rbf_kernel&gt;</em>, <em>kernel_gd=None</em>, <em>kernel_hessian=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/kernel_ridge.html#KernelRidge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.kernel_ridge.KernelRidge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nonlinear regression method with translational invariant kernel &amp; L_2 regularization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>C</strong> – float, small positive values to improve the conditioning of the problem</li>
+<li><strong>gamma</strong> – float, small value of gamma lead to a large correlation length in RBF kernel</li>
+<li><strong>kernel</strong> – callable</li>
+<li><strong>kernel_gd</strong> – callable</li>
+<li><strong>kernel_hessian</strong> – callable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">statslib.kernel_ridge</span> <span class="k">import</span> <span class="n">KernelRidge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">6</span><span class="p">],</span> <span class="n">y</span><span class="p">[:</span><span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dy_hat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_gradient</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:])</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="statslib.kernel_ridge.KernelRidge.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>dy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/kernel_ridge.html#KernelRidge.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.kernel_ridge.KernelRidge.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build kernel matrix from data, and solve for model coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – array-like, shape (n_samples, n_features), the training input samples.</li>
+<li><strong>y</strong> – array-like, shape (n_samples,), the target values.</li>
+<li><strong>dy</strong> – None, left for consistency</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return self:</th><td class="field-body"><p class="first last">object, returns self.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.kernel_ridge.KernelRidge.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/kernel_ridge.html#KernelRidge.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.kernel_ridge.KernelRidge.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>predict the function values for newly input samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> – array-like, shape (n_samples, n_features), the input samples.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return y_pred:</th><td class="field-body">ndarray, shape (n_samples,)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="statslib.kernel_ridge.KernelRidge.predict_gradient">
+<code class="descname">predict_gradient</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/kernel_ridge.html#KernelRidge.predict_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.kernel_ridge.KernelRidge.predict_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the gradient based on the fitted function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> – array-like, shape (n_samples, n_features), the input samples.</td>
+</tr>
+</tbody>
+</table>
+<p>:return dy_pred : ndarray, shape (n_samples, n_features)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="statslib.pipeline.MyPipe">
+<em class="property">class </em><code class="descclassname">statslib.pipeline.</code><code class="descname">MyPipe</code><span class="sig-paren">(</span><em>steps</em>, <em>memory=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pipeline.html#MyPipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pipeline.MyPipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pipline is used to encapsulate transformers and estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>steps</strong> – list of tuples, e.g. [(‘transform’, pca), (‘estimator’, krr)]</li>
+<li><strong>memory</strong> – None, str or object with the joblib.Memory interface, optional, used to cache the fitted transformers of the pipeline.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">statslib.pipline</span> <span class="k">import</span> <span class="n">MyPipe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">statslib.pca</span> <span class="k">import</span> <span class="n">PrincipalComponentAnalysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">statslib.kernel_ridge</span> <span class="k">import</span> <span class="n">KernelRidge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pca</span> <span class="o">=</span> <span class="n">PrincipalComponentAnalysis</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">krr</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Mypipe</span><span class="p">([(</span><span class="s1">&#39;PCA&#39;</span><span class="p">,</span> <span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;KRR&#39;</span><span class="p">,</span> <span class="n">krr</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="statslib.pipeline.MyPipe.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em>, <em>dy=None</em>, <em>**fit_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/statslib/pipeline.html#MyPipe.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#statslib.pipeline.MyPipe.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit all the transforms one after the other and transform the
+data, then fit the transformed data using the final estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – iterable, training data. Must fulfill input requirements of first step of the pipeline.</li>
+<li><strong>y</strong> – iterable, default=None, training targets. Must fulfill label requirements for all steps of the pipeline.</li>
+<li><strong>dy</strong> – iterable, default=None, training function gradient</li>
+<li><strong>**fit_params</strong> – <p>dict of string -&gt; object                             parameters passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method of each step, where                             each parameter name is prefixed such that parameter <code class="docutils literal notranslate"><span class="pre">p</span></code> for step                             <code class="docutils literal notranslate"><span class="pre">s</span></code> has key <code class="docutils literal notranslate"><span class="pre">s__p</span></code>.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return self:</th><td class="field-body"><p class="first last">Pipeline, this estimator</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

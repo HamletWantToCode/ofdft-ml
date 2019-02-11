@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>statslib.pipeline &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Code API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>statslib.pipeline</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for statslib.pipeline</h1><div class="highlight"><pre>
+<span></span><span class="c1"># extended pipline</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="k">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">_fit_transform_one</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">clone</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals</span> <span class="k">import</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_memory</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.metaestimators</span> <span class="k">import</span> <span class="n">if_delegate_has_method</span>
+
+<div class="viewcode-block" id="MyPipe"><a class="viewcode-back" href="../../api.html#statslib.pipeline.MyPipe">[docs]</a><span class="k">class</span> <span class="nc">MyPipe</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pipline is used to encapsulate transformers and estimator</span>
+
+<span class="sd">    :param steps: list of tuples, e.g. [(&#39;transform&#39;, pca), (&#39;estimator&#39;, krr)]</span>
+
+<span class="sd">    :param memory: None, str or object with the joblib.Memory interface, optional, used to cache the fitted transformers of the pipeline.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">    &gt;&gt;&gt; from statslib.pipline import MyPipe</span>
+<span class="sd">    &gt;&gt;&gt; from statslib.pca import PrincipalComponentAnalysis</span>
+<span class="sd">    &gt;&gt;&gt; from statslib.kernel_ridge import KernelRidge</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; pca = PrincipalComponentAnalysis()</span>
+<span class="sd">    &gt;&gt;&gt; krr = KernelRidge()</span>
+<span class="sd">    &gt;&gt;&gt; pipe = Mypipe([(&#39;PCA&#39;, pca), (&#39;KRR&#39;, krr)])</span>
+<span class="sd">    &gt;&gt;&gt; X = np.random.rand(10, 5)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.rand(10)</span>
+<span class="sd">    &gt;&gt;&gt; pipe.fit(X, y)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
+
+    <span class="nd">@if_delegate_has_method</span><span class="p">(</span><span class="n">delegate</span><span class="o">=</span><span class="s1">&#39;_final_estimator&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">predict_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_params</span><span class="p">):</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Xt</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">)</span>
+        <span class="n">dyt_predict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">predict_gradient</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_params</span><span class="p">)</span>
+        <span class="c1"># !!! for real space grid, we have to multiply the grid number</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dyt_predict</span>
+
+    <span class="c1"># @if_delegate_has_method(delegate=&#39;_final_estimator&#39;)</span>
+    <span class="c1"># def predict_hessian(self, X, **predict_params):</span>
+    <span class="c1">#     Xt = X</span>
+    <span class="c1">#     for name, transform in self.steps[:-1]:</span>
+    <span class="c1">#         if transform is not None:</span>
+    <span class="c1">#             Xt = transform.transform(Xt)</span>
+    <span class="c1">#     ddyt_predict = self.steps[-1][-1].predict_hessian(Xt, **predict_params)</span>
+    <span class="c1">#     return (X.shape[1]-1)*ddyt_predict</span>
+
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_params</span><span class="p">):</span>
+        <span class="c1"># shallow copy of steps - this should really be steps_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_steps</span><span class="p">()</span>
+        <span class="c1"># Setup the memory</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="n">check_memory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">)</span>
+
+        <span class="n">fit_transform_one_cached</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">_fit_transform_one</span><span class="p">)</span>
+
+        <span class="n">fit_params_steps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span>
+                                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pname</span><span class="p">,</span> <span class="n">pval</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">fit_params</span><span class="p">):</span>
+            <span class="n">step</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="n">pname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">fit_params_steps</span><span class="p">[</span><span class="n">step</span><span class="p">][</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">pval</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="n">dyt</span> <span class="o">=</span> <span class="n">dy</span>
+        <span class="k">for</span> <span class="n">step_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">transformer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">):</span>
+                    <span class="c1"># joblib &gt;= 0.12</span>
+                    <span class="k">if</span> <span class="n">memory</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># we do not clone when caching is disabled to</span>
+                        <span class="c1"># preserve backward compatibility</span>
+                        <span class="n">cloned_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cloned_transformer</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="s1">&#39;cachedir&#39;</span><span class="p">):</span>
+                    <span class="c1"># joblib &lt; 0.11</span>
+                    <span class="k">if</span> <span class="n">memory</span><span class="o">.</span><span class="n">cachedir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># we do not clone when caching is disabled to</span>
+                        <span class="c1"># preserve backward compatibility</span>
+                        <span class="n">cloned_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cloned_transformer</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cloned_transformer</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+                <span class="c1"># Fit or load from cache the current transfomer</span>
+                <span class="n">Xt</span><span class="p">,</span> <span class="n">fitted_transformer</span> <span class="o">=</span> <span class="n">fit_transform_one_cached</span><span class="p">(</span>
+                    <span class="n">cloned_transformer</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Xt</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">fit_params_steps</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                <span class="c1"># Fit the gradient</span>
+                <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">dyt</span> <span class="o">=</span> <span class="n">fitted_transformer</span><span class="o">.</span><span class="n">transform_gradient</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span>
+                <span class="c1"># Replace the transformer of the step with the fitted</span>
+                <span class="c1"># transformer. This is necessary when loading the transformer</span>
+                <span class="c1"># from the cache.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="n">step_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fitted_transformer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_estimator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Xt</span><span class="p">,</span> <span class="n">dyt</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">Xt</span><span class="p">,</span> <span class="n">dyt</span><span class="p">,</span> <span class="n">fit_params_steps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="MyPipe.fit"><a class="viewcode-back" href="../../api.html#statslib.pipeline.MyPipe.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit all the transforms one after the other and transform the</span>
+<span class="sd">        data, then fit the transformed data using the final estimator.</span>
+
+<span class="sd">        :param X: iterable, training data. Must fulfill input requirements of first step of the pipeline.</span>
+
+<span class="sd">        :param y: iterable, default=None, training targets. Must fulfill label requirements for all steps of the pipeline.</span>
+
+<span class="sd">        :param dy: iterable, default=None, training function gradient</span>
+
+<span class="sd">        :param **fit_params: dict of string -&gt; object\</span>
+<span class="sd">                             parameters passed to the ``fit`` method of each step, where\</span>
+<span class="sd">                             each parameter name is prefixed such that parameter ``p`` for step\</span>
+<span class="sd">                             ``s`` has key ``s__p``.</span>
+
+<span class="sd">        :return self: Pipeline, this estimator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Xt</span><span class="p">,</span> <span class="n">dyt</span><span class="p">,</span> <span class="n">fit_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_estimator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_final_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dyt</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>quantum.utils &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Code API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>quantum.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for quantum.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># simulate periodic potential</span>
+<div class="viewcode-block" id="simple_potential_gen"><a class="viewcode-back" href="../../api.html#quantum.utils.simple_potential_gen">[docs]</a><span class="k">def</span> <span class="nf">simple_potential_gen</span><span class="p">(</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">n_cos</span><span class="p">,</span> <span class="n">low_V0</span><span class="p">,</span> <span class="n">high_V0</span><span class="p">,</span> <span class="n">low_Phi0</span><span class="p">,</span> <span class="n">high_Phi0</span><span class="p">,</span> <span class="n">random_state</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate periodic potential as sum of cosin functions, differ in their</span>
+<span class="sd">    magnitude and phase.</span>
+
+<span class="sd">    :param nbasis: number of plane wave basis, related to the size of hamilton matrix</span>
+<span class="sd">    :param n_cos: number of cosin function used</span>
+<span class="sd">    :param low_V0: lower bound for cosin function&#39;s magnitude</span>
+<span class="sd">    :param high_V0: upper bound for cosin function&#39;s magnitude</span>
+<span class="sd">    :param random_state: an integer as random seed</span>
+
+<span class="sd">    :return: Generator generates hamitonian matrix and potential k-components in each iteration</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">    &gt;&gt;&gt; from quantum.utils import simple_potential_gen</span>
+<span class="sd">    &gt;&gt;&gt; n_basis = 10</span>
+<span class="sd">    &gt;&gt;&gt; low_V0, high_V0 = 3, 5</span>
+<span class="sd">    &gt;&gt;&gt; low_phi0, high_phi0 = -0.1, 0.1</span>
+<span class="sd">    &gt;&gt;&gt; params_gen = simple_potential_gen(n_basis, low_V0, high_V0, low_phi0, high_phi0, random_state=9302)</span>
+<span class="sd">    &gt;&gt;&gt; hamilton_mat, Vq = next(params_gen)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">Vq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+        <span class="n">hamilton_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbasis</span><span class="p">,</span> <span class="n">nbasis</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+
+        <span class="n">V0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low_V0</span><span class="p">,</span> <span class="n">high_V0</span><span class="p">,</span> <span class="n">n_cos</span><span class="p">)</span>
+        <span class="n">Phi0</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low_Phi0</span><span class="p">,</span> <span class="n">high_Phi0</span><span class="p">,</span> <span class="n">n_cos</span><span class="p">)</span>
+
+        <span class="n">Vq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">V0</span><span class="p">)</span>
+        <span class="n">Vq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">V0</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">Phi0</span><span class="p">))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">hamilton_mat</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Vq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+
+        <span class="k">yield</span><span class="p">(</span><span class="n">hamilton_mat</span><span class="p">,</span> <span class="n">Vq</span><span class="p">)</span></div>
+
+<span class="c1"># potential generator</span>
+<span class="c1"># def potential_gen(nbasis, max_q, low_V0, high_V0, low_mu, high_mu, random_state):</span>
+<span class="c1">#     np.random.seed(random_state)</span>
+<span class="c1">#     assert max_q &gt; 2</span>
+<span class="c1">#     NG = np.arange(2, max_q, 1, &#39;int&#39;)</span>
+<span class="c1">#     while True:</span>
+<span class="c1">#         nq = np.random.randint(0, max_q-2)      # nq is number of non-zero k components other than 0 and 1 component</span>
+<span class="c1">#         if nq == 0:</span>
+<span class="c1">#             q_index = np.array([1])</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             q_index = np.append(np.random.choice(NG, size=nq), 1)</span>
+<span class="c1">#         mu = np.random.uniform(low_mu, high_mu)</span>
+<span class="c1">#         Vq = np.zeros(nbasis, dtype=np.complex64)</span>
+<span class="c1">#         hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)</span>
+<span class="c1">#         V0 = np.random.uniform(low_V0, high_V0)</span>
+<span class="c1">#         for i in q_index:</span>
+<span class="c1">#             theta = np.random.uniform(0, 2*np.pi)</span>
+<span class="c1">#             r0 = np.random.rand()</span>
+<span class="c1">#             Vq_conj = -V0*r0*(np.cos(theta) - 1j*np.sin(theta))</span>
+<span class="c1">#             Vq[i] = Vq_conj.conjugate()</span>
+<span class="c1">#             np.fill_diagonal(hamilton_mat[i:, :-i], Vq_conj)</span>
+<span class="c1">#         yield (hamilton_mat, Vq, mu)</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
