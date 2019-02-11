@@ -74,7 +74,8 @@ def predict_results(Ek, Ek_, dens, dens_, dens_true, grad, grad_):
     ax1.set_title('Ek')
     ax1.legend()
     ## density plot
-    X = np.linspace(0, 1, 100)
+    n_space = len(dens)
+    X = np.linspace(0, 1, n_space)
     ax2 = fig.add_subplot(gd[1])
     ax2.plot(X, dens_, 'b--', label='predict')
     ax2.plot(X, dens_true, 'r', label='true', alpha=0.7)
@@ -121,20 +122,17 @@ def main(argv):
         else:
             return usage()
     elif args[0] == 'pred':
-        mu = 0
-        n = 0
-        step = 1e-8
-        tol = 1e-8
         for (opt, val) in opt_vals:
             if opt in ['-f', '--file']:
                 fnames = val
                 train_fname, test_fname, estimator_fname = fnames.split(':')
                 with open(train_fname, 'rb') as f:
                     train_data = pickle.load(f)
-                train_densx, train_Ek, train_gradx = train_data[:, 1:101], train_data[:, 0], train_data[:, 101:]
+                n_space = train_data.shape[1] - 1
+                train_densx, train_Ek, train_gradx = train_data[:, 1:1+n_space//2], train_data[:, 0], train_data[:, 1+n_space//2:]
                 with open(test_fname, 'rb') as f1:
                     test_data = pickle.load(f1)
-                test_densx, test_Ek, test_gradx = test_data[:, 1:101], test_data[:, 0], test_data[:, 101:]
+                test_densx, test_Ek, test_gradx = test_data[:, 1:1+n_space//2], test_data[:, 0], test_data[:, 1+n_space//2:]
                 with open(estimator_fname, 'rb') as f2:
                     estimator = pickle.load(f2)
             elif opt == '--params':
@@ -159,7 +157,7 @@ def main(argv):
         pred_gradx = estimator.named_steps['reduce_dim'].inverse_transform_gradient(estimator.predict_gradient(dens_targ[np.newaxis, :]))[0]
         optimizer = EulerSolver(estimator)
         dens_predict = optimizer.run(dens_init[np.newaxis, :], Vx_targ, mu,\
-                                      n_electron, step, tol)
+                                      n_electron, step, tol, verbose=True)
         predict_results(test_Ek, pred_Ek, dens_init, dens_predict, dens_targ, gradx_targ, pred_gradx)
         
 if __name__ == '__main__':

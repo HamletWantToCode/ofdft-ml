@@ -15,7 +15,8 @@ class EulerSolver(object):
         _, n_points = dens.shape
         dEkt = self.estimator.predict_gradient(dens)[0]
         dEk = dEkt @ self.tr_mat.T
-        return dEk + V - mu
+        V_proj = (V-mu) @ self.tr_mat @ self.tr_mat.T
+        return dEk + V_proj
 
     def run(self, dens_init, V, mu, N, eta=0.1, err=1e-8, maxiters=1000, verbose=False):
         dens_init = check_array(dens_init)

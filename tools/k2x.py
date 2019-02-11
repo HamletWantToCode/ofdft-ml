@@ -9,17 +9,19 @@ def main(argv, N_POINTS=100):
         print("""
               usage:
               -h: help
+              -n(--n_points): number of real space grid 
               -f: input files, seperated by ':'
               """)
         return 100
     try:
-        opt_vals, _ = getopt.getopt(argv, 'hf:', ['help', 'file='])
+        opt_vals, _ = getopt.getopt(argv, 'hnf:', ['help', 'file=', 'n_points='])
     except getopt.GetoptError as err:
         print(err)
         return usage()
     for (opt, vals) in opt_vals:
         if opt in ['-h', '--help']: return usage()
         elif opt in ['-f', '--file']: file_list = vals.split(':')
+        elif opt in ['-n', '--n_points']: N_POINTS = int(vals)
     # read and transform files
     for fname in file_list:
         with open(fname, 'rb') as f:

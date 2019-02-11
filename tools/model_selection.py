@@ -69,7 +69,7 @@ def main(argv, R=np.random.RandomState(32892)):
                 'regressor__gamma': np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)
                 }
                 ]
-    grid_search = MyGridSearchCV(pipe, param_grid, cv=3, scoring=neg_mean_squared_error_scorer)
+    grid_search = MyGridSearchCV(pipe, param_grid, cv=n_CV, scoring=neg_mean_squared_error_scorer)
     grid_search.fit(densx_train, Ek_train, dEkx_train)
     print('best parameters:\n', grid_search.best_params_, '\n')
     test_score = grid_search.cv_results_['mean_test_score']

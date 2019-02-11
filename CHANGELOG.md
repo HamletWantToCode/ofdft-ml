@@ -6,7 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Gauss process regression module 
+- Gauss process regression module
+
+## 0.0.2 - 2019-02-11
+### Added
+- New test suit:
+  - Tests for "ksolver": energy band calculation & kinetic energy calculation
+  - Tests for "xsolver": harmonic oscillator & finite well
+  - Tests for "ext_math": linear equation solver & Euclidean distance calculator
+  - scikit-learn tests for "statslib"
+
+### Changed
+- "EL_solver": change *V* in "energy_gd" function to projected *V_proj* 
 
 ## 0.0.1 - 2019-02-10
 ### Added
