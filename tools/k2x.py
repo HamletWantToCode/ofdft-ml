@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python 
 
 import pickle
 import sys
@@ -16,7 +16,7 @@ def main(argv, N_POINTS=100):
               """)
         return 100
     try:
-        opt_vals, _ = getopt.getopt(argv, 'hnf:', ['help', 'file=', 'n_points='])
+        opt_vals, _ = getopt.getopt(argv, 'hn:f:', ['help', 'file=', 'n_points='])
     except getopt.GetoptError as err:
         print(err)
         return usage()
