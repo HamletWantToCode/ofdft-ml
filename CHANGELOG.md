@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Gauss process regression module
 
+## 0.0.3 - 2019-02-12
+### Fixed
+- python scripts in tools/ can't execute in linux system: add "#!/usr/bin/env python"
+
 ## 0.0.2 - 2019-02-11
 ### Added
 - New test suit:
