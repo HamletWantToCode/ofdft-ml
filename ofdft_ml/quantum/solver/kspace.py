@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.linalg import eigh
 
-def ksolver(nk, nbasis, hamiton_mat, occ=1, debug=False):
+def ksolver(nk, nbasis, hamiton_mat, occ, debug=False):
     """
     Solving for groundstate electron density & kinetic energy given a hamiltonian matrix
     writen in k-space.

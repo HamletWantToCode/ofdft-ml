@@ -2,8 +2,8 @@
 
 import numpy as np
 
-def xsolver(n_points, hamilton_mat, ne):
-    _, Psi = np.linalg.eigh(hamilton_mat)
+def xsolver(n_points, hamilton_mat, ne, debug=False):
+    En, Psi = np.linalg.eigh(hamilton_mat)
     # compute electron density
     density = np.zeros(n_points)
     for i in range(ne):
@@ -17,7 +17,10 @@ def xsolver(n_points, hamilton_mat, ne):
     for i in range(ne):
         Tk += (Psi[:, i].conj() @ T @ Psi[:, i]).real
     Tk *= -0.5*(n_points-1)**2
-    return Tk, density
+    if debug:
+        return Tk, density, En
+    else:
+        return Tk, density
 
 # def finiteDifferenceMatrix(n, xstart, xend, potentialFunction):
 #     T = np.zeros((n, n), np.float64)

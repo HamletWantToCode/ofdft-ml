@@ -37,18 +37,18 @@ def cholesky_solver(A, b, k=0):
         x[i] = (y[i] - Lh[i] @ x) / Lh[i, i]
     return x
 
-def iterative_solver(A, b, k=0, max_iters=1000, std_err=1e-5):
-    n_dims = A.shape[0]
-    x0 = 1e-3*np.ones(n_dims)
-    for i in range(max_iters):
-        b_ = b - A @ x0
-        z0 = cholesky_solver(A, b_, k)
-        x0 += z0
-        error = np.amax(abs(z0))
-        if error < std_err:
-            print('solution converge after %d of iterations' %(i+1))
-            break
-    return x0
+# def iterative_solver(A, b, k=0, max_iters=1000, std_err=1e-5):
+#     n_dims = A.shape[0]
+#     x0 = 1e-3*np.ones(n_dims)
+#     for i in range(max_iters):
+#         b_ = b - A @ x0
+#         z0 = cholesky_solver(A, b_, k)
+#         x0 += z0
+#         error = np.amax(abs(z0))
+#         if error < std_err:
+#             print('solution converge after %d of iterations' %(i+1))
+#             break
+#     return x0
 
 # math
 def euclidean_distance(X, Y):

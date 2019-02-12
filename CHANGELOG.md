@@ -17,7 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - scikit-learn tests for "statslib"
 
 ### Changed
-- "EL_solver": change *V* in "energy_gd" function to projected *V_proj* 
+- "EL_solver": change *V* in "energy_gd" function to projected *V_proj*
+- "kspace": remove the default *occ* value for "ksolver"
+
+### Issues
+- Test for "xsolver": harmonic oscillator energy level difference not accurately (only within 2 digits, expect 7 digits) match the oscillator frequency
+- Test for "ext_math": linear solver not accurate (only within 5 digits, expect 7 digits) for solving ill-condition linear system
+- Test for "kernel_ridge": the gradient calculation not accurate (only within 4 digits, expect 7 digits) compared to finite difference result
 
 ## 0.0.1 - 2019-02-10
 ### Added
