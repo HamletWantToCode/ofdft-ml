@@ -6,7 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Gauss process regression module
+- New version of grid search CV:
+  - clean code
+  - support various CV spliting strategies
+  - more efficient parallelism
+  - scikit-learn compatible
+- More complete scorer function
+
+### Deprecated
+- Old grid search method will be deprecated in the future
+
+## 0.1.0 - 2019-02-14
+### Added
+- New grid search CV: clean code, not parallel
 
 ## 0.0.5 - 2019-02-13
 ### Fixed
