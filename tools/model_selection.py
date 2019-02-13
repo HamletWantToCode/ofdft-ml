@@ -73,7 +73,7 @@ def main(argv, R=np.random.RandomState(32892)):
     grid_search.fit(densx_train, Ek_train, dEkx_train)
     print('best parameters:\n', grid_search.best_params_, '\n')
     test_score = grid_search.cv_results_['mean_test_score']
-    best_score_index = grid_search.cv_results_['rank_test_score'][0]-1
+    best_score_index = grid_search.best_index_
     print('test score (mse):', -test_score[best_score_index])
 
     best_estimator = grid_search.best_estimator_

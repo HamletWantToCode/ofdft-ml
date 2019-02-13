@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Gauss process regression module
 
+## 0.0.5 - 2019-02-13
+### Fixed
+- "tools/model_selection.py": in the line 76, the original 'best_score_index' is incorrect (used grid_searchCV 'rank_test_score'), change to 'best_index_' method
+
 ## 0.0.4 - 2019-02-12
 ### Fixed
 - "tools/k2x.py": the '-n' tag doesn't work, fixed by adding ':' behind
