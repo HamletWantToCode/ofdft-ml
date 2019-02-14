@@ -10,15 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - clean code
   - support various CV spliting strategies
   - more efficient parallelism
-  - scikit-learn compatible
-- More complete scorer function
+  - full scikit-learn compatibility
+- Added test for grid search CV
+- New version of pipeline
+
+### Changed
+- Modify "scorer" module: use sklearn 'make_scorer' implementation, extend function '_PredictScorer' to measure error of function gradient
 
 ### Deprecated
 - Old grid search method will be deprecated in the future
+- Old pipeline method will be deprecated in the future
 
 ## 0.1.0 - 2019-02-14
 ### Added
-- New grid search CV: clean code, not parallel
+- added "new_grid_search" module
 
 ## 0.0.5 - 2019-02-13
 ### Fixed

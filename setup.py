@@ -27,6 +27,6 @@ setup(
                         'mpi4py==2.0.0'
                        ],
     classifiers = [
-                   'Programming Language :: Python :: 3.6.5',
+                   'Programming Language :: Python :: 3.6',
                   ]
 )
