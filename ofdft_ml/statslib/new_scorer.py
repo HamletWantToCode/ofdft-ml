@@ -4,6 +4,7 @@
 import numpy as np 
 from sklearn.metrics.scorer import _BaseScorer, _ProbaScorer, _ThresholdScorer
 
+__all__ = ['make_scorer']
 class _PredictScorer(_BaseScorer):
     def __call__(self, estimator, X, y_true, dy_true=None):
         """

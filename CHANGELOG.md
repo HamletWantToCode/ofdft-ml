@@ -10,12 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - clean code
   - support various CV spliting strategies
   - more efficient parallelism
-  - full scikit-learn compatibility
-- Added test for grid search CV
+  - fully compatible with scikit-learn
 - New version of pipeline
+  - clean code (remove joblib memory inside the code)
+  - fully compatible with scikit-learn 
+- Added test for grid search CV and pipeline
+
+### Removed
+- Remove unused keyword 'kernel_hessan' in "KernelRidge" method
 
 ### Changed
 - Modify "scorer" module: use sklearn 'make_scorer' implementation, extend function '_PredictScorer' to measure error of function gradient
+- "model_selection" script: modify the import of old CV & pipe & scorer
 
 ### Deprecated
 - Old grid search method will be deprecated in the future

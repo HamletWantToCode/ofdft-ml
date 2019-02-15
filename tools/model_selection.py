@@ -9,10 +9,8 @@ from sklearn.model_selection import train_test_split
 
 from ofdft_ml.statslib.kernel_ridge import KernelRidge
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis
-from ofdft_ml.statslib.grid_search import MyGridSearchCV
-from ofdft_ml.statslib.pipeline import MyPipe
+from ofdft_ml.statslib.old import MyGridSearchCV, MyPipe, make_scorer
 from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
-from ofdft_ml.statslib.scorer import make_scorer
 
 def main(argv, R=np.random.RandomState(32892)):
     # parsing parameter
