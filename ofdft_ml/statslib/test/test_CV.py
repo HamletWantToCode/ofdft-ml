@@ -40,25 +40,22 @@ def test_grid_search_common():
 def test_grid_search_gradient():
     import pickle
     from ofdft_ml.statslib.pca import PrincipalComponentAnalysis as pca
-    from ofdft_ml.statslib.pipeline import MyPipe
-    from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
+    from ofdft_ml.statslib.old import MyPipe, MyGridSearchCV, make_scorer
+    from ofdft_ml.statslib.utils import rbf_kernel_gradient
     from ofdft_ml.statslib.kernel_ridge import KernelRidge
-    from ofdft_ml.statslib.grid_search import MyGridSearchCV
     from ofdft_ml.statslib.new_scorer import make_scorer as new_make_scorer
-    from ofdft_ml.statslib.scorer import make_scorer
 
-    path = '/Users/hongbinren/Documents/Code/iop/ofdft-ml/ofdft_ml/statslib/test/'
-    with open(path+'test_densx_Ek', 'rb') as f:
+    with open('test_densx_Ek', 'rb') as f:
         data = pickle.load(f)
     X, y = data[:, 1:], data[:, 0]
-    with open(path+'test_Vx_mu', 'rb') as f:
+    with open('test_Vx_mu', 'rb') as f:
         data = pickle.load(f)
     dy = -data[:, 1:]
     train_X, test_X, train_y, test_y, train_dy, test_dy = \
         train_test_split(X, y, dy, test_size=0.4, random_state=3)
     new_scorer = new_make_scorer(mean_squared_error)
     old_scorer = make_scorer(mean_squared_error)
-    model = MyPipe([('reduce_dim', pca()), ('regressor', KernelRidge(kernel=rbf_kernel, kernel_gd=rbf_kernel_gradient))])
+    model = MyPipe([('reduce_dim', pca()), ('regressor', KernelRidge(kernel_gd=rbf_kernel_gradient))])
     params_grid = {'regressor__C': [1e-10, 1e-5, 1e-3], 'regressor__gamma': [1e-3, 1e-2, 0.1]}
     # setup model
     old_CV = MyGridSearchCV(model, params_grid, old_scorer, cv=3)
