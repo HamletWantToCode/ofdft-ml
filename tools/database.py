@@ -82,24 +82,37 @@ def main(argv):
 
     elif args[0] == 'k':
         from ofdft_ml.quantum.solver import ksolver
-        from ofdft_ml.quantum.utils import kpotential_gen
+        # from ofdft_ml.quantum.utils import kpotential_gen
+        from ofdft_ml.quantum.utils import special_potential_gen
 
         fname = opt_vals[1][1]
         with open(fname, 'r') as f:
             for line in f:
                 ii = line.index('=')
-                if line[:ii]=='n_cosin': N_COS = int(line[(ii+1):])
+                # if line[:ii]=='n_cosin': N_COS = int(line[(ii+1):])
                 if line[:ii]=='n_basis': N_BASIS = int(line[(ii+1):])
                 if line[:ii]=='n_kpoints': N_KPOINTS = int(line[(ii+1):])
                 if line[:ii]=='occ': OCC = int(line[(ii+1):])
-                elif line[:ii] == 'V0': 
+                if line[:ii]=='a': 
                     low, up = line[(ii+1):].split(':')
-                    LOW_V0, HIGH_V0 = float(low), float(up)
-                elif line[:ii] == 'Phi0':
-                    low, up = line[(ii+1):].split(':') 
-                    LOW_Phi0, HIGH_Phi0 = float(low), float(up)
-        param_gen = kpotential_gen(N_BASIS, N_COS, LOW_V0, HIGH_V0,\
-                                    LOW_Phi0, HIGH_Phi0, RANDOM_SEED)
+                    LOW_A, HIGH_A = float(low), float(up)
+                if line[:ii]=='b':
+                    b_range = line[(ii+1):].split(':')
+                    b_range = [float(x) for x in b_range]
+                    b1_range, b2_range = b_range[:2], b_range[2:]
+                if line[:ii]=='c':
+                    low, up = line[(ii+1):].split(':')
+                    LOW_C, HIGH_C = float(low), float(up) 
+                # elif line[:ii] == 'V0': 
+                #     low, up = line[(ii+1):].split(':')
+                #     LOW_V0, HIGH_V0 = float(low), float(up)
+                # elif line[:ii] == 'Phi0':
+                #     low, up = line[(ii+1):].split(':') 
+                #     LOW_Phi0, HIGH_Phi0 = float(low), float(up)
+        # param_gen = kpotential_gen(N_BASIS, N_COS, LOW_V0, HIGH_V0,\
+        #                             LOW_Phi0, HIGH_Phi0, RANDOM_SEED)
+        param_gen = special_potential_gen(N_BASIS, LOW_A, HIGH_A, b1_range, b2_range,\
+                                          LOW_C, HIGH_C, RANDOM_SEED)
         # storage
         POTENTIAL_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)
         DATA_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)

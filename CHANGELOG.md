@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.2.2 - 2019-02-17
+### Changed
+- Periodic potential change to 'special_potential_gen', a periodic potential with two Gauss peaks 
+
 ## 0.2.0 - 2019-02-17
 ### Added
 - New version of grid search CV:

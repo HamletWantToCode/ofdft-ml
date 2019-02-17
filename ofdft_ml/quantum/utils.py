@@ -56,3 +56,21 @@ def kpotential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, random_s
 
         yield(hamilton_mat, Vq)
 
+# potential in k with two peaks
+def special_potential_gen(nbasis, low_a, high_a, b1_range, b2_range, low_c, high_c, random_state):
+    R = np.random.RandomState(random_state)
+    X = np.linspace(0, 1, 100)
+    while True:
+        a = R.uniform(low_a, high_a, 2)
+        b = np.append(R.uniform(*b1_range, 1), R.uniform(*b2_range, 1)).reshape((2, 1))
+        c = R.uniform(low_c, high_c, (2, 1))
+        Vx = -a @ np.exp(-(X - b)**2/(2*c**2))
+        Vq = np.fft.rfft(Vx)/100
+        Vq_ = Vq[:nbasis]
+
+        hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)
+        for i in range(nbasis):
+            np.fill_diagonal(hamilton_mat[i:, :-i], Vq_[i].conj())
+        
+        yield(hamilton_mat, Vq_)
+
