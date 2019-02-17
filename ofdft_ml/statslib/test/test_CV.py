@@ -70,3 +70,6 @@ def test_grid_search_gradient():
     # NOTE: the "scores" between new and old CV are different, due to the
     # different feature number, in old version, feature number = real grid
     # in new version, feature number = reduced dimension !!!
+
+if __name__ == "__main__":
+    test_grid_search_common()
