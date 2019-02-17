@@ -9,7 +9,10 @@ from sklearn.model_selection import train_test_split
 
 from ofdft_ml.statslib.kernel_ridge import KernelRidge
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis
-from ofdft_ml.statslib.old import MyGridSearchCV, MyPipe, make_scorer
+from ofdft_ml.statslib.new_grid_search import NewGridSearchCV
+from ofdft_ml.statslib.new_pipeline import NewPipeline
+from ofdft_ml.statslib.new_scorer import make_scorer
+# from ofdft_ml.statslib.old import MyGridSearchCV, MyPipe, make_scorer
 from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
 
 def main(argv, R=np.random.RandomState(32892)):
@@ -58,7 +61,7 @@ def main(argv, R=np.random.RandomState(32892)):
     densx_train, densx_test, Ek_train, Ek_test, dEkx_train, dEkx_test = train_test_split(densx,\
                                                       Ek, dEkx, test_size=test_ratio, random_state=R)
     neg_mean_squared_error_scorer = make_scorer(mean_squared_error)
-    pipe = MyPipe([('reduce_dim', PrincipalComponentAnalysis()),\
+    pipe = NewPipeline([('reduce_dim', PrincipalComponentAnalysis()),\
                    ('regressor', KernelRidge(kernel=rbf_kernel, kernel_gd=rbf_kernel_gradient))])
     param_grid = [
                 {
@@ -67,7 +70,7 @@ def main(argv, R=np.random.RandomState(32892)):
                 'regressor__gamma': np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)
                 }
                 ]
-    grid_search = MyGridSearchCV(pipe, param_grid, cv=n_CV, scoring=neg_mean_squared_error_scorer)
+    grid_search = NewGridSearchCV(pipe, param_grid, cv=n_CV, scoring=neg_mean_squared_error_scorer)
     grid_search.fit(densx_train, Ek_train, dEkx_train)
     print('best parameters:\n', grid_search.best_params_, '\n')
     test_score = grid_search.cv_results_['mean_test_score']
