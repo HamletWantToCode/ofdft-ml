@@ -80,8 +80,8 @@ def two_cosin_peak_gen(nbasis, V1_range, V2_range, V3_range, phi1_range, phi2_ra
         Vq = np.zeros(nbasis, dtype=np.complex64)
         hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)
 
-        V0 = np.append(R.uniform(*V1_range, 1), R.uniform(*V2_range, 1), R.uniform(*V3_range, 1))
-        Phi0 = np.append(R.uniform(*phi1_range, 1), R.uniform(*phi2_range, 1), R.uniform(*phi3_range, 1))
+        V0 = np.r_(R.uniform(*V1_range, 1), R.uniform(*V2_range, 1), R.uniform(*V3_range, 1))
+        Phi0 = np.r_(R.uniform(*phi1_range, 1), R.uniform(*phi2_range, 1), R.uniform(*phi3_range, 1))
 
         Vq[0] = -np.sum(V0)
         Vq[1] = 0.5*(V0 @ np.exp(2j*np.pi*Phi0))
