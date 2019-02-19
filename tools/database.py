@@ -82,7 +82,7 @@ def main(argv):
 
     elif args[0] == 'k':
         from ofdft_ml.quantum.solver import ksolver
-        from ofdft_ml.quantum.utils import two_cosin_peak_gen
+        from ofdft_ml.quantum.utils import three_cosin_peak_gen
         # from ofdft_ml.quantum.utils import kpotential_gen
         # from ofdft_ml.quantum.utils import special_potential_gen
 
