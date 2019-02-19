@@ -14,10 +14,11 @@ setup(
     packages = find_packages(),
     py_modules = ['ofdft_ml.ext_math'],
     scripts = [
-               'tools/data_process.py', 
-               'tools/database.py', 
-               'tools/k2x.py', 
-               'tools/model_selection.py'
+               'tools/data_process.py',
+               'tools/database.py',
+               'tools/k2x.py',
+               'tools/model_selection.py',
+               'tools/plot_rawdata.py'
                ],
     platforms = 'any',
     install_requires = ['scikit-learn==0.19.1',

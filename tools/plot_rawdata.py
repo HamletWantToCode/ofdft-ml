@@ -5,9 +5,23 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 def main(argv):
-    opt_vals, _ = getopt.getopt(argv, '', ['f_dens=', 'f_Vx='])
+    def usage():
+        print("""
+              usage:
+              -h: help
+              --f_dens: density in real space
+              --f_Vx: potential in real space
+              """)
+        return 100
+    try:
+        opt_vals, _ = getopt.getopt(argv, 'h', ['help', 'f_dens=', 'f_Vx='])
+    except getopt.GetoptError as err:
+        print(err)
+        return usage()
     for opt, val in opt_vals:
-        if opt == '--f_dens':
+        if opt in ['-h', '--help']:
+            return usage()
+        elif opt == '--f_dens':
             dens_fname = val
         elif opt == '--f_Vx':
             Vx_fname = val
