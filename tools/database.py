@@ -114,7 +114,7 @@ def main(argv):
                     Phi1_range, Phi2_range, Phi3_range = phi_list[:2], phi_list[2:4], phi_list[4:]
         # param_gen = kpotential_gen(N_BASIS, N_COS, LOW_V0, HIGH_V0,\
         #                             LOW_Phi0, HIGH_Phi0, RANDOM_SEED)
-        param_gen = two_cosin_peak_gen(N_BASIS, V1_range, V2_range, V3_range, \
+        param_gen = three_cosin_peak_gen(N_BASIS, V1_range, V2_range, V3_range, \
                                        Phi1_range, Phi2_range, Phi3_range, RANDOM_SEED)
         # param_gen = special_potential_gen(N_BASIS, LOW_A, HIGH_A, b1_range, b2_range,\
         #                                   LOW_C, HIGH_C, RANDOM_SEED)
