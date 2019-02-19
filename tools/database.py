@@ -107,14 +107,15 @@ def main(argv):
                 elif line[:ii] == 'V0': 
                     V0_list = line[(ii+1):].split(':')
                     V0_list = [float(x) for x in V0_list]
-                    V1_range, V2_range = V0_list[:2], V0_list[2:]
+                    V1_range, V2_range, V3_range = V0_list[:2], V0_list[2:4], V0_list[4:]
                 elif line[:ii] == 'Phi0':
                     phi_list = line[(ii+1):].split(':') 
                     phi_list = [float(x) for x in phi_list]
-                    Phi1_range, Phi2_range = phi_list[:2], phi_list[2:]
+                    Phi1_range, Phi2_range, Phi3_range = phi_list[:2], phi_list[2:4], phi_list[4:]
         # param_gen = kpotential_gen(N_BASIS, N_COS, LOW_V0, HIGH_V0,\
         #                             LOW_Phi0, HIGH_Phi0, RANDOM_SEED)
-        param_gen = two_cosin_peak_gen(N_BASIS, V1_range, V2_range, Phi1_range, Phi2_range, RANDOM_SEED)
+        param_gen = two_cosin_peak_gen(N_BASIS, V1_range, V2_range, V3_range, \
+                                       Phi1_range, Phi2_range, Phi3_range, RANDOM_SEED)
         # param_gen = special_potential_gen(N_BASIS, LOW_A, HIGH_A, b1_range, b2_range,\
         #                                   LOW_C, HIGH_C, RANDOM_SEED)
         # storage
