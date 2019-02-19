@@ -33,7 +33,7 @@ def main(argv):
     Vx = p_data[:, 1:]
     assert densx.shape == Vx.shape, print('data shape mismatch !')
     n_samples, n_points = densx.shape
-    ii = np.random.randint(0, n_samples, 1)
+    ii = np.random.randint(0, n_samples, 1)[0]
     X = np.linspace(0, 1, n_points)
     fig = plt.figure(figsize=(10, 5))
     ax1 = fig.add_subplot(121)
