@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add tool 'plot_rawdata' to plot the density and potential distribution in real space
 
 ## 0.2.2 - 2019-02-17
 ### Changed
