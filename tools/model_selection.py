@@ -8,7 +8,6 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 from ofdft_ml.statslib.kernel_ridge import KernelRidge
-from ofdft_ml.statslib.centre import Centre
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis
 from ofdft_ml.statslib.new_grid_search import NewGridSearchCV
 from ofdft_ml.statslib.new_pipeline import NewPipeline
@@ -59,18 +58,13 @@ def main(argv, R=np.random.RandomState(32892)):
                         low, up = line[(ii+1):].split(':')
                         LOW_GAMMA, HIGH_GAMMA = float(low), float(up)
                     elif line[:ii] == 'ngrid': N_GRIDS = int(line[(ii+1):])
-                    elif line[:ii] == 'mid_point': MID_POINT = [int(line[(ii+1):])]
-        else: return usage()
     densx_train, densx_test, Ek_train, Ek_test, dEkx_train, dEkx_test = train_test_split(densx,\
                                                       Ek, dEkx, test_size=test_ratio, random_state=R)
     neg_mean_squared_error_scorer = make_scorer(mean_squared_error)
-    pipe = NewPipeline([
-                   ('centre', Centre()),
-                   ('reduce_dim', PrincipalComponentAnalysis()),
+    pipe = NewPipeline([('reduce_dim', PrincipalComponentAnalysis()),\
                    ('regressor', KernelRidge(kernel=rbf_kernel, kernel_gd=rbf_kernel_gradient))])
     param_grid = [
                 {
-                'centre__mid': MID_POINT,
                 'reduce_dim__n_components': N_COMPONENTS,
                 'regressor__C': np.logspace(LOW_C, HIGH_C, N_GRIDS),        
                 'regressor__gamma': np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)

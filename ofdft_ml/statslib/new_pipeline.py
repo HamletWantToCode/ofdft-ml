@@ -65,16 +65,6 @@ class NewPipeline(Pipeline):
                 self._final_estimator.fit(Xt, y, dyt)
         return self
 
-    def fit_transform(self, X, y=None):
-        last_step = self._final_estimator
-        Xt, fit_params = self._fit(X, y)
-        if hasattr(last_step, 'fit_transform'):
-            return last_step.fit_transform(Xt, y)
-        elif last_step is None:
-            return Xt
-        else:
-            return last_step.fit(Xt, y).transform(Xt)
-
     @if_delegate_has_method(delegate='_final_estimator')
     def predict_gradient(self, X):
         Xt = X
