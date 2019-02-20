@@ -59,7 +59,7 @@ def kpotential_gen(nbasis, n_cos, low_V0, high_V0, low_Phi0, high_Phi0, random_s
 # potential in k with two peaks
 def special_potential_gen(nbasis, low_a, high_a, b1_range, b2_range, low_c, high_c, random_state):
     R = np.random.RandomState(random_state)
-    X = np.linspace(0, 1, 100)
+    X = np.linspace(0, 1, 100, endpoint=False)
     while True:
         a = R.uniform(low_a, high_a, 2)
         b = np.append(R.uniform(*b1_range, 1), R.uniform(*b2_range, 1)).reshape((2, 1))
