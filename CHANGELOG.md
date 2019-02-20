@@ -4,14 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## 0.3.0 - 2019-02-20
 ### Added
 - Add tool 'plot_rawdata' to plot the density and potential distribution in real space
-- Add 'data_centre' module, data will be centred before they are fed into PCA, this should remove the pattern introduced by translation invariance
+- Add tool 'data_centre', data will be centred before they are fed into PCA, this should remove the additional pattern introduced by translate V(x)/density along x-axis
+
+### Fixed
+- Error when call 'fit_transform' method in pipeline, delete '**fit_params' in arguments
 
 ## 0.2.2 - 2019-02-17
-### Changed
-- Periodic potential change to 'special_potential_gen', a periodic potential with two Gauss peaks 
+### Added
+- Implement 'special_potential_gen', a periodic potential with two Gauss peaks 
 
 ## 0.2.0 - 2019-02-17
 ### Added

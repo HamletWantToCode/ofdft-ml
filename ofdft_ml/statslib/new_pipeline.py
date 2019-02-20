@@ -74,3 +74,13 @@ class NewPipeline(Pipeline):
         dyt_predict = self.steps[-1][-1].predict_gradient(Xt)
         # !!! for real space grid, we have to multiply the grid number
         return (X.shape[1]-1)*dyt_predict
+
+    def fit_transform(self, X, y=None):
+        last_step = self._final_estimator
+        Xt, fit_params = self._fit(X, y)
+        if hasattr(last_step, 'fit_transform'):
+            return last_step.fit_transform(Xt, y)
+        elif last_step is None:
+            return Xt
+        else:
+            return last_step.fit(Xt, y).transform(Xt)

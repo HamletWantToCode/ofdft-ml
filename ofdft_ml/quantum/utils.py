@@ -73,18 +73,3 @@ def special_potential_gen(nbasis, low_a, high_a, b1_range, b2_range, low_c, high
             np.fill_diagonal(hamilton_mat[i:, :-i], Vq_[i].conj())
         
         yield(hamilton_mat, Vq_)
-
-def three_cosin_peak_gen(nbasis, V1_range, V2_range, V3_range, phi1_range, phi2_range, phi3_range, random_state):
-    R = np.random.RandomState(random_state)
-    while True:
-        Vq = np.zeros(nbasis, dtype=np.complex64)
-        hamilton_mat = np.zeros((nbasis, nbasis), dtype=np.complex64)
-
-        V0 = np.r_[R.uniform(*V1_range, 1), R.uniform(*V2_range, 1), R.uniform(*V3_range, 1)]
-        Phi0 = np.r_[R.uniform(*phi1_range, 1), R.uniform(*phi2_range, 1), R.uniform(*phi3_range, 1)]
-
-        Vq[0] = -np.sum(V0)
-        Vq[1] = 0.5*(V0 @ np.exp(2j*np.pi*Phi0))
-        np.fill_diagonal(hamilton_mat[1:, :-1], Vq[1].conj())
-
-        yield(hamilton_mat, Vq)
