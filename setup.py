@@ -19,7 +19,6 @@ setup(
                'tools/k2x.py',
                'tools/model_selection.py',
                'tools/plot_rawdata.py',
-               'tools/data_centre.py'
                ],
     platforms = 'any',
     install_requires = ['scikit-learn==0.19.1',

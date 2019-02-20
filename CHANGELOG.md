@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add tool 'plot_rawdata' to plot the density and potential distribution in real space
-- Add 'data_centre' module, data will be centred before they are fed into PCA, this should remove the pattern introduced by translation invariance
+- Add 'data_centre' to statslib subpackage, data will be centred before they are fed into PCA, this should remove the pattern introduced by translation invariance
+- Add 'fit_transform' method to 'NewPipeline' module, fix the previous fit_transform bug
+- Add 'data_centre' as a data preprocess method to 'model_selection'
 
 ## 0.2.2 - 2019-02-17
 ### Changed
