@@ -15,6 +15,10 @@ Then, ``cd`` to the ofdft-ml folder and run the install command (install in deve
 	cd ofdft-ml
 	pip install -e .
 
+**NOTE**: installing mpi4py with pip will throw out error, it's recommanded to use conda to install::
+
+	conda install mpi4py 
+
 Requirement
 -----------
 
@@ -34,84 +38,89 @@ Getting started
 Generate DFT data
 ^^^^^^^^^^^^^^^^^
 
-To generate density and kinetic energy of electron in a periodic potential::
+To generate density and kinetic energy of electron in a periodic potential, run::
 
 	database.py -n 100 --params quantum_params k
 
-will generate a dataset contains 100 data samples (each is a density-kinetic energy pair), the parameters used to generate the dataset are specified in "quantum_params" file, extra label ``k`` here is used to indicate that we are solving Schrodinger's equation in momentum space. 
+here, the ``-n`` flag indicate size of the dataset, ``--params`` flag should followed by the parameter file "quantum_params", ``k`` tag means we are solving Schrodinger equation in momentum space. The above command will generates a dataset contains 100 data samples, each data sample is a density-kinetic energy pair, the density in dataset is represented by it's Fourier components in momentum space.
 
-the "quantum_params" file is a plain text file with lines::
+The "quantum_params" file is a plain text file with lines::
 
 	n_basis=10    # indicate the number of plane wave basis being used to expand the wavefunction
 	n_kpoints=100 # indicate the number of k points sampled in the 1st BZ
 	n_cosin=3     # indicate the number of cosin functions used to construct the periodic potential 
-	V0=1:10       # indicate the range of the amplitudes of the cosin functions (positive)
-	Phi0=-0.2:0.2 # indicate the range of phase of the cosin functions
+	V0=1:10       # indicate the upper & lower bound of magnitude of the cosin functions (positive)
+	Phi0=-0.2:0.2 # indicate the upper & lower bound of phase of the cosin functions
 	occ=1         # indicate the electron occupation in a unit cell
 
-To generate density and kinetic energy of electron in a finite range potential (Burke's case)::
+Alternatively, you can also generate dataset of finite non-periodic potential by solving Schrodinger equation in real space use finite difference method::
 
 	database.py -n 100 --params quantum_params x
 
-the "quantum_params" file is only different in specifying potential energy parameters, and the label ``x`` is used to indicate that we are solving Schrodinger equation in real space.
+the ``x`` tag is used to indicate that we are solving Schrodinger equation in real space.
 
-You can also use MPI to speedup the generating process::
+The "quantum_params" file in this case is::
+
+	n_points=500    # indicate the number of real space grid 
+	n_Gauss=3       # indicate the number of Gauss functions used to construct the periodic potential 
+	a=1:10          # indicate the upper & lower bound of magnitude of the Gauss functions (positive)
+	b=0.4:0.6       # indicate the upper & lower bound of mean value of the Gauss functions
+	c=0.03:0.1      # indicate the upper & lower bound of variance of the Gauss functions
+	ne=1            # indicate the number of electron
+
+You can also use MPI to speedup the data generating process::
 
 	mpirun -n 4 database.py -n 100 --params quantum_params k
 
 Data preprocessing
 ^^^^^^^^^^^^^^^^^^
 
-You can visulize the electron density and potential distribution in real space using::
-
-	plot_rawdata.py --f_dens density_in_x --f_Vx potential_in_x
-
-this will gives you "density_distribution.png" and "Vx_distribution.png".
-
-you can also run PCA to view electron density data, which is 500 dimension in a 2 dimensional space::
-
-	data_process.py -f density_in_x proc
-
-the label ``proc`` represents for preprocessing.
-
-**NOTE**: if you use ``k`` label in the data generating process, the Fourier components of electron density in momentum space is stored in dataset. In this case, you should first transfer the electron density to real space by::
+If you use ``k`` tag in the generation process, you have to transform the Fourier components in momentum space back to real space by::
 
 	k2x.py -n 500 -f density_in_k:potential_in_k
 
-the ``-n`` option specifies the number of real space grid used in inverse Fourier transform, multiple files are separated by ``:``.
+here, ``-n`` indicate the number of real space grid used to represent the transformed density function, input files are behind the ``-f`` option, and separated by ':'.
+
+After transforming data back into the real space, you can visualize the density & potential in real space using::
+
+	plot_rawdata.py --f_dens density_in_x --f_Vx potential_in_x
+
+``--f_dens`` and ``--f_Vx`` flags are used to specify density and potential file respectively.
+
+The density in real space are usually of hundred or thousands of dimensions, we can use PCA to visualize the dataset in low dimension::
+
+	data_process.py -f density_in_x proc
+
+the ``proc`` tag is used to indicate the data preprocessing mode.
 
 Model selection
 ^^^^^^^^^^^^^^^
 
-Machine learning models contains hyperparameters that need to be specified before learning, to choose these hyperparameters properly, we use cross validation method, and do grid search inside a range of parameters.
+Usually, machine learing models contain hyperparameters, you will need to specify these parameters properly before fed data to the model. We provide a cross validation method that could help you choose best hyperparameters out of a set of candidates. 
 
-To do grid search, you need first specify the parameter region in the "model_params" file::
+To do grid search, you need first specify the hyperparameter set in the "model_params" file::
 
 	n_components=1 # number of PCA components
-	C=-15:-8       # the range of penalty factor for kernel ridge regression (log based)
-	gamma=-8:-1    # the range gamma parameter for RBF kernel (log based)
-	ngrid=50       # number of grid in each dimension
+	C=-15:-8       # the upper & lower bound of penalty factor of kernel ridge regression (log based)
+	gamma=-8:-1    # the upper & lower bound of gamma parameter for RBF kernel (log based)
+	ngrid=50       # number of grids in each parameter dimension
 
 and then run::
 
 	model_selection.py --f_dens density_in_x --f_grad potential_in_x -r 0.4 -n 5 --params model_params
+	
+``-r`` indicate the ratio of test set's size over the whole dataset's size, ``-n`` indicate the number of folds used in cross validation.
 
-here the ``--f_dens`` and ``--f_grad`` indicate the electron density data file and the corresponding potential, ``-r`` indicate the ratio between training and testing dataset, ``-n`` indicate the number of folds used in cross validation.
-
-**NOTE**: The grid search program is implemented by Python's `multiprocessing` module, and will use all the available CPU resources by default.
+**NOTE**: The grid search program is implemented by Python's `multiprocessing` module, it will use all your available CPU resources by default.
 
 Machine learning & prediction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After grid search, you will have three new files: "demo_train_data", "demo_test_data" and "demo_best_estimator", these files are used to predict kinetic energy for the new sample and find ground state electron density for new potential. 
-
-**NOTE**: the prediction is done on the testing dataset in "demo_test_data" file.
-
-to see the prediction, run::
+Cross validation will help us choose the best hyperparamter, and train a machine learning model with those parameters (stored in "demo_best_estimator"), it will also generate training and testing data, which are contained in "demo_train_data" and "demo_test_data". Our prediction will use these data files to predict kinetic energy and ground state electron density of a new sample. To do prediction, run::
 
 	data_process.py -f demo_train_data:demo_test_data:demo_best_estimator --params optim_params pred
 
-``pred`` label means we are predicting, and to do prediction, we need to specify parameters for a optimization algorithm (used to find ground state electron density), the "optim_params" files looks like this::
+``pred`` tag means we are predicting, and since we are using gradient descent method to solve Euler Lagrange equation, you need to specify some optimization parameter for prediction, these parameters are written in the "optim_params" file::
 
 	mu=10      # indicate the chemical potential
 	n=1        # indicate the electron number
