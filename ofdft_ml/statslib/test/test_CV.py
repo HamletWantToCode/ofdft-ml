@@ -45,10 +45,10 @@ def test_grid_search_gradient():
     from ofdft_ml.statslib.kernel_ridge import KernelRidge
     from ofdft_ml.statslib.new_scorer import make_scorer as new_make_scorer
 
-    with open('test_densx_Ek', 'rb') as f:
+    with open('ofdft_ml/statslib/test/test_densx_Ek', 'rb') as f:
         data = pickle.load(f)
     X, y = data[:, 1:], data[:, 0]
-    with open('test_Vx_mu', 'rb') as f:
+    with open('ofdft_ml/statslib/test/test_Vx_mu', 'rb') as f:
         data = pickle.load(f)
     dy = -data[:, 1:]
     train_X, test_X, train_y, test_y, train_dy, test_dy = \
