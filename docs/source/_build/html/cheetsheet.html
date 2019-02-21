@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The reStructuredText Cheat Sheet: Syntax Reminders &mdash; OFDFT-ML 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'1.0.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OFDFT-ML
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">The reStructuredText Cheat Sheet: Syntax Reminders</a><ul>
+<li><a class="reference internal" href="#section-structure">Section Structure</a></li>
+<li><a class="reference internal" href="#body-elements">Body Elements</a></li>
+<li><a class="reference internal" href="#inline-markup">Inline Markup</a></li>
+<li><a class="reference internal" href="#directive-quick-reference">Directive Quick Reference</a></li>
+<li><a class="reference internal" href="#interpreted-text-role-quick-reference">Interpreted Text Role Quick Reference</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OFDFT-ML</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The reStructuredText Cheat Sheet: Syntax Reminders</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cheetsheet.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-restructuredtext-cheat-sheet-syntax-reminders">
+<h1>The <a class="reference external" href="http://docutils.sf.net/rst.html">reStructuredText</a> Cheat Sheet: Syntax Reminders<a class="headerlink" href="#the-restructuredtext-cheat-sheet-syntax-reminders" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Info:</th><td class="field-body">See &lt;<a class="reference external" href="http://docutils.sf.net/rst.html">http://docutils.sf.net/rst.html</a>&gt; for introductory docs.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Author:</th><td class="field-body">David Goodger &lt;<a class="reference external" href="mailto:goodger&#37;&#52;&#48;python&#46;org">goodger<span>&#64;</span>python<span>&#46;</span>org</a>&gt;</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">$Date: 2013-02-20 02:10:53 +0100 (Mi, 20. Feb 2013) $</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Revision:</th><td class="field-body">$Revision: 7612 $</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">This is a “docinfo block”, or bibliographic field list</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are reading this as HTML, please read
+<a class="reference external" href="cheatsheet.txt">cheatsheet.txt</a> instead to see the input syntax examples!</p>
+</div>
+<div class="section" id="section-structure">
+<h2>Section Structure<a class="headerlink" href="#section-structure" title="Permalink to this headline">¶</a></h2>
+<p>Section titles are underlined or overlined &amp; underlined.</p>
+</div>
+<div class="section" id="body-elements">
+<h2>Body Elements<a class="headerlink" href="#body-elements" title="Permalink to this headline">¶</a></h2>
+<p>Grid table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="52%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first">Paragraphs are flush-left,
+separated by blank lines.</p>
+<blockquote class="last">
+<div>Block quotes are indented.</div></blockquote>
+</td>
+<td rowspan="2"><p class="first">Literal block, preceded by “::”:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Indented</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">Quoted</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s1">&#39;Doctest block&#39;</span>
+<span class="go">Doctest block</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td colspan="2"><div class="first last line-block">
+<div class="line">Line blocks preserve line breaks &amp; indents. [new in 0.3.6]</div>
+<div class="line-block">
+<div class="line">Useful for addresses, verse, and adornment-free lists; long
+lines can be wrapped with continuation lines.</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Simple tables:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">List Type</th>
+<th class="head">Examples (syntax in the <a class="reference external" href="cheatsheet.txt">text source</a>)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Bullet list</td>
+<td><ul class="first last simple">
+<li>items begin with “-“, “+”, or “*”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>Enumerated list</td>
+<td><ol class="first last arabic simple">
+<li>items use any variation of “1.”, “A)”, and “(i)”</li>
+<li>also auto-enumerated</li>
+</ol>
+</td>
+</tr>
+<tr class="row-even"><td>Definition list</td>
+<td><dl class="first last docutils">
+<dt>Term is flush-left <span class="classifier-delimiter">:</span> <span class="classifier">optional classifier</span></dt>
+<dd>Definition is indented, no blank line between</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>Field list</td>
+<td><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">field name:</th><td class="field-body">field body</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td>Option list</td>
+<td><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-o</span></kbd></td>
+<td>at least 2 spaces between option &amp; description</td></tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Explicit Markup</th>
+<th class="head">Examples (visible in the <a class="reference external" href="cheatsheet.txt">text source</a>)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Footnote</td>
+<td><table class="first last docutils footnote" frame="void" id="id1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>Manually numbered or [#] auto-numbered
+(even [#labelled]) or [*] auto-symbol</td></tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td>Citation</td>
+<td><table class="first last docutils citation" frame="void" id="cit2002" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[CIT2002]</a></td><td>A citation.</td></tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td>Hyperlink Target</td>
+<td></td>
+</tr>
+<tr class="row-odd" id="internal-target"><td>Anonymous Target</td>
+<td></td>
+</tr>
+<tr class="row-even"><td>Directive (“::”)</td>
+<td><img alt="images/biohazard.png" class="first last" src="images/biohazard.png" />
+</td>
+</tr>
+<tr class="row-odd"><td>Substitution Def</td>
+<td></td>
+</tr>
+<tr class="row-even"><td>Comment</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td>Empty Comment</td>
+<td>(“..” on a line by itself, with blank lines before &amp; after,
+used to separate indentation contexts)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="inline-markup">
+<h2>Inline Markup<a class="headerlink" href="#inline-markup" title="Permalink to this headline">¶</a></h2>
+<p><em>emphasis</em>; <strong>strong emphasis</strong>; <cite>interpreted text</cite>; <em>interpreted text
+with role</em>; <code class="docutils literal"><span class="pre">inline</span> <span class="pre">literal</span> <span class="pre">text</span></code>; standalone hyperlink,
+<a class="reference external" href="http://docutils.sourceforge.net">http://docutils.sourceforge.net</a>; named reference, <a class="reference external" href="http://docutils.sf.net/rst.html">reStructuredText</a>;
+<a class="reference external" href="http://docutils.sf.net/docs/ref/rst/restructuredtext.html">anonymous reference</a>; footnote reference, <a class="footnote-reference" href="#id1" id="id3">[1]</a>; citation reference,
+<a class="reference internal" href="#cit2002" id="id4">[CIT2002]</a>; like an inline directive; <span class="target" id="inline-internal-target">inline internal target</span>.</p>
+</div>
+<div class="section" id="directive-quick-reference">
+<h2>Directive Quick Reference<a class="headerlink" href="#directive-quick-reference" title="Permalink to this headline">¶</a></h2>
+<p>See &lt;<a class="reference external" href="http://docutils.sf.net/docs/ref/rst/directives.html">http://docutils.sf.net/docs/ref/rst/directives.html</a>&gt; for full info.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Directive Name</th>
+<th class="head">Description (Docutils version added to, in [brackets])</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>attention</td>
+<td>Specific admonition; also “caution”, “danger”,
+“error”, “hint”, “important”, “note”, “tip”, “warning”</td>
+</tr>
+<tr class="row-odd"><td>admonition</td>
+<td>Generic titled admonition: <code class="docutils literal"><span class="pre">..</span> <span class="pre">admonition::</span> <span class="pre">By</span> <span class="pre">The</span> <span class="pre">Way</span></code></td>
+</tr>
+<tr class="row-even"><td>image</td>
+<td><code class="docutils literal"><span class="pre">..</span> <span class="pre">image::</span> <span class="pre">picture.png</span></code>; many options possible</td>
+</tr>
+<tr class="row-odd"><td>figure</td>
+<td>Like “image”, but with optional caption and legend</td>
+</tr>
+<tr class="row-even"><td>topic</td>
+<td><code class="docutils literal"><span class="pre">..</span> <span class="pre">topic::</span> <span class="pre">Title</span></code>; like a mini section</td>
+</tr>
+<tr class="row-odd"><td>sidebar</td>
+<td><code class="docutils literal"><span class="pre">..</span> <span class="pre">sidebar::</span> <span class="pre">Title</span></code>; like a mini parallel document</td>
+</tr>
+<tr class="row-even"><td>parsed-literal</td>
+<td>A literal block with parsed inline markup</td>
+</tr>
+<tr class="row-odd"><td>rubric</td>
+<td><code class="docutils literal"><span class="pre">..</span> <span class="pre">rubric::</span> <span class="pre">Informal</span> <span class="pre">Heading</span></code></td>
+</tr>
+<tr class="row-even"><td>epigraph</td>
+<td>Block quote with class=”epigraph”</td>
+</tr>
+<tr class="row-odd"><td>highlights</td>
+<td>Block quote with class=”highlights”</td>
+</tr>
+<tr class="row-even"><td>pull-quote</td>
+<td>Block quote with class=”pull-quote”</td>
+</tr>
+<tr class="row-odd"><td>compound</td>
+<td>Compound paragraphs [0.3.6]</td>
+</tr>
+<tr class="row-even"><td>container</td>
+<td>Generic block-level container element [0.3.10]</td>
+</tr>
+<tr class="row-odd"><td>table</td>
+<td>Create a titled table [0.3.1]</td>
+</tr>
+<tr class="row-even"><td>list-table</td>
+<td>Create a table from a uniform two-level bullet list [0.3.8]</td>
+</tr>
+<tr class="row-odd"><td>csv-table</td>
+<td>Create a table from CSV data [0.3.4]</td>
+</tr>
+<tr class="row-even"><td>contents</td>
+<td>Generate a table of contents</td>
+</tr>
+<tr class="row-odd"><td>sectnum</td>
+<td>Automatically number sections, subsections, etc.</td>
+</tr>
+<tr class="row-even"><td>header, footer</td>
+<td>Create document decorations [0.3.8]</td>
+</tr>
+<tr class="row-odd"><td>target-notes</td>
+<td>Create an explicit footnote for each external target</td>
+</tr>
+<tr class="row-even"><td>math</td>
+<td>Mathematical notation (input in LaTeX format)</td>
+</tr>
+<tr class="row-odd"><td>meta</td>
+<td>HTML-specific metadata</td>
+</tr>
+<tr class="row-even"><td>include</td>
+<td>Read an external reST file as if it were inline</td>
+</tr>
+<tr class="row-odd"><td>raw</td>
+<td>Non-reST data passed untouched to the Writer</td>
+</tr>
+<tr class="row-even"><td>replace</td>
+<td>Replacement text for substitution definitions</td>
+</tr>
+<tr class="row-odd"><td>unicode</td>
+<td>Unicode character code conversion for substitution defs</td>
+</tr>
+<tr class="row-even"><td>date</td>
+<td>Generates today’s date; for substitution defs</td>
+</tr>
+<tr class="row-odd"><td>class</td>
+<td>Set a “class” attribute on the next element</td>
+</tr>
+<tr class="row-even"><td>role</td>
+<td>Create a custom interpreted text role [0.3.2]</td>
+</tr>
+<tr class="row-odd"><td>default-role</td>
+<td>Set the default interpreted text role [0.3.10]</td>
+</tr>
+<tr class="row-even"><td>title</td>
+<td>Set the metadata document title [0.3.10]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="interpreted-text-role-quick-reference">
+<h2>Interpreted Text Role Quick Reference<a class="headerlink" href="#interpreted-text-role-quick-reference" title="Permalink to this headline">¶</a></h2>
+<p>See &lt;<a class="reference external" href="http://docutils.sf.net/docs/ref/rst/roles.html">http://docutils.sf.net/docs/ref/rst/roles.html</a>&gt; for full info.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Role Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>emphasis</td>
+<td>Equivalent to <em>emphasis</em></td>
+</tr>
+<tr class="row-odd"><td>literal</td>
+<td>Equivalent to <code class="docutils literal"><span class="pre">literal</span></code> but processes backslash escapes</td>
+</tr>
+<tr class="row-even"><td>math</td>
+<td>Mathematical notation (input in LaTeX format)</td>
+</tr>
+<tr class="row-odd"><td>PEP</td>
+<td>Reference to a numbered Python Enhancement Proposal</td>
+</tr>
+<tr class="row-even"><td>RFC</td>
+<td>Reference to a numbered Internet Request For Comments</td>
+</tr>
+<tr class="row-odd"><td>raw</td>
+<td>For non-reST data; cannot be used directly (see docs) [0.3.6]</td>
+</tr>
+<tr class="row-even"><td>strong</td>
+<td>Equivalent to <strong>strong</strong></td>
+</tr>
+<tr class="row-odd"><td>sub</td>
+<td>Subscript</td>
+</tr>
+<tr class="row-even"><td>sup</td>
+<td>Superscript</td>
+</tr>
+<tr class="row-odd"><td>title</td>
+<td>Title reference (book, etc.); standard default role</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Hongbin Ren
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
