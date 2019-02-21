@@ -44,7 +44,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="intro.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,23 +89,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Home</a><ul>
-<li><a class="reference internal" href="#ofdft-ml-orbital-free-density-functional-theory-run-on-machine-learning">OFDFT-ML: Orbital free density functional theory run on machine learning</a></li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#requirement">Requirement</a></li>
-<li><a class="reference internal" href="#getting-started">Getting started</a><ul>
-<li><a class="reference internal" href="#generate-dft-data">Generate DFT data</a></li>
-<li><a class="reference internal" href="#data-preprocessing">Data preprocessing</a></li>
-<li><a class="reference internal" href="#model-selection">Model selection</a></li>
-<li><a class="reference internal" href="#machine-learning-prediction">Machine learning &amp; prediction</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+
             
           
         </div>
@@ -172,116 +161,25 @@
 <div class="section" id="ofdft-ml-orbital-free-density-functional-theory-run-on-machine-learning">
 <h2>OFDFT-ML: Orbital free density functional theory run on machine learning<a class="headerlink" href="#ofdft-ml-orbital-free-density-functional-theory-run-on-machine-learning" title="Permalink to this headline">¶</a></h2>
 <p>This project is aimed to implement the orbital free density functional theory in a machine learning way, our method will learn a effective energy functional from DFT calculated dataset, and find the ground state electron density of a given potential by solving Euler-Lagrange equation.</p>
-<p>The project is organized as follows:</p>
-<ul class="simple">
-<li>quantum subpackage: solve Schrodinger equation with a periodic potential in momentum space, solve Schrodinger equation with a finite range potential in real space</li>
-<li>statslib subpackage: machine learning program library</li>
-<li>tools: scripts used to generate dataset, analyze data and learning</li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#requirement">Requirement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#getting-started">Getting started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#generate-dft-data">Generate DFT data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#data-preprocessing">Data preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#model-selection">Model selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#machine-learning-prediction">Machine learning &amp; prediction</a></li>
 </ul>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p><strong>Install OFDFT-ML from GitHub source</strong>:</p>
-<p>First, clone OFDFT-ML using <code class="docutils literal"><span class="pre">git</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">HamletWantToCode</span><span class="o">/</span><span class="n">ofdft</span><span class="o">-</span><span class="n">ml</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-<p>Then, <code class="docutils literal"><span class="pre">cd</span></code> to the ofdft-ml folder and run the install command (install in develop mode):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ofdft</span><span class="o">-</span><span class="n">ml</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="requirement">
-<h2>Requirement<a class="headerlink" href="#requirement" title="Permalink to this headline">¶</a></h2>
-<p>Required packages:</p>
-<ul class="simple">
-<li>numpy</li>
-<li>scipy</li>
-<li>matplotlib</li>
-<li>mpi4py</li>
-<li>scikit-learn==0.19.1</li>
+</li>
 </ul>
-<p>Python version 3.6</p>
-</div>
-<div class="section" id="getting-started">
-<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="generate-dft-data">
-<h3>Generate DFT data<a class="headerlink" href="#generate-dft-data" title="Permalink to this headline">¶</a></h3>
-<p>To generate density and kinetic energy of electron in a periodic potential:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">database</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span> <span class="o">--</span><span class="n">params</span> <span class="n">quantum_params</span> <span class="n">k</span>
-</pre></div>
-</div>
-<p>will generate a dataset contains 100 data samples (each is a density-kinetic energy pair), the parameters used to generate the dataset are specified in “quantum_params” file, extra label <code class="docutils literal"><span class="pre">k</span></code> here is used to indicate that we are solving Schrodinger’s equation in momentum space.</p>
-<p>the “quantum_params” file is a plain text file with lines:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">n_basis</span><span class="o">=</span><span class="mi">10</span>    <span class="c1"># indicate the number of plane wave basis being used to expand the wavefunction</span>
-<span class="n">n_kpoints</span><span class="o">=</span><span class="mi">100</span> <span class="c1"># indicate the number of k points sampled in the 1st BZ</span>
-<span class="n">n_cosin</span><span class="o">=</span><span class="mi">3</span>     <span class="c1"># indicate the number of cosin functions used to construct the periodic potential</span>
-<span class="n">V0</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span>       <span class="c1"># indicate the range of the amplitudes of the cosin functions (positive)</span>
-<span class="n">Phi0</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">:</span><span class="mf">0.2</span> <span class="c1"># indicate the range of phase of the cosin functions</span>
-<span class="n">occ</span><span class="o">=</span><span class="mi">1</span>         <span class="c1"># indicate the electron occupation in a unit cell</span>
-</pre></div>
-</div>
-<p>To generate density and kinetic energy of electron in a finite range potential (Burke’s case):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">database</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span> <span class="o">--</span><span class="n">params</span> <span class="n">quantum_params</span> <span class="n">x</span>
-</pre></div>
-</div>
-<p>the “quantum_params” file is only different in specifying potential energy parameters, and the label <code class="docutils literal"><span class="pre">x</span></code> is used to indicate that we are solving Schrodinger equation in real space.</p>
-<p>You can also use MPI to speedup the generating process:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="n">database</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span> <span class="o">--</span><span class="n">params</span> <span class="n">quantum_params</span> <span class="n">k</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="data-preprocessing">
-<h3>Data preprocessing<a class="headerlink" href="#data-preprocessing" title="Permalink to this headline">¶</a></h3>
-<p>You can visulize the electron density and potential distribution in real space using:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plot_rawdata</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">f_dens</span> <span class="n">density_in_x</span> <span class="o">--</span><span class="n">f_Vx</span> <span class="n">potential_in_x</span>
-</pre></div>
-</div>
-<p>this will gives you “density_distribution.png” and “Vx_distribution.png”.</p>
-<p>you can also run PCA to view electron density data, which is 500 dimension in a 2 dimensional space:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data_process</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">f</span> <span class="n">density_in_x</span> <span class="n">proc</span>
-</pre></div>
-</div>
-<p>the label <code class="docutils literal"><span class="pre">proc</span></code> represents for preprocessing.</p>
-<p><strong>NOTE</strong>: if you use <code class="docutils literal"><span class="pre">k</span></code> label in the data generating process, the Fourier components of electron density in momentum space is stored in dataset. In this case, you should first transfer the electron density to real space by:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">k2x</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">n</span> <span class="mi">500</span> <span class="o">-</span><span class="n">f</span> <span class="n">density_in_k</span><span class="p">:</span><span class="n">potential_in_k</span>
-</pre></div>
-</div>
-<p>the <code class="docutils literal"><span class="pre">-n</span></code> option specifies the number of real space grid used in inverse Fourier transform, multiple files are separated by <code class="docutils literal"><span class="pre">:</span></code>.</p>
-</div>
-<div class="section" id="model-selection">
-<h3>Model selection<a class="headerlink" href="#model-selection" title="Permalink to this headline">¶</a></h3>
-<p>Machine learning models contains hyperparameters that need to be specified before learning, to choose these hyperparameters properly, we use cross validation method, and do grid search inside a range of parameters.</p>
-<p>To do grid search, you need first specify the parameter region in the “model_params” file:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">n_components</span><span class="o">=</span><span class="mi">1</span> <span class="c1"># number of PCA components</span>
-<span class="n">C</span><span class="o">=-</span><span class="mi">15</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span>       <span class="c1"># the range of penalty factor for kernel ridge regression (log based)</span>
-<span class="n">gamma</span><span class="o">=-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span>    <span class="c1"># the range gamma parameter for RBF kernel (log based)</span>
-<span class="n">ngrid</span><span class="o">=</span><span class="mi">50</span>       <span class="c1"># number of grid in each dimension</span>
-</pre></div>
-</div>
-<p>and then run:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">model_selection</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">f_dens</span> <span class="n">density_in_x</span> <span class="o">--</span><span class="n">f_grad</span> <span class="n">potential_in_x</span> <span class="o">-</span><span class="n">r</span> <span class="mf">0.4</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">--</span><span class="n">params</span> <span class="n">model_params</span>
-</pre></div>
-</div>
-<p>here the <code class="docutils literal"><span class="pre">--f_dens</span></code> and <code class="docutils literal"><span class="pre">--f_grad</span></code> indicate the electron density data file and the corresponding potential, <code class="docutils literal"><span class="pre">-r</span></code> indicate the ratio between training and testing dataset, <code class="docutils literal"><span class="pre">-n</span></code> indicate the number of folds used in cross validation.</p>
-<p><strong>NOTE</strong>: The grid search program is implemented by Python’s <cite>multiprocessing</cite> module, and will use all the available CPU resources by default.</p>
-</div>
-<div class="section" id="machine-learning-prediction">
-<h3>Machine learning &amp; prediction<a class="headerlink" href="#machine-learning-prediction" title="Permalink to this headline">¶</a></h3>
-<p>After grid search, you will have three new files: “demo_train_data”, “demo_test_data” and “demo_best_estimator”, these files are used to predict kinetic energy for the new sample and find ground state electron density for new potential.</p>
-<p><strong>NOTE</strong>: the prediction is done on the testing dataset in “demo_test_data” file.</p>
-<p>to see the prediction, run:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data_process</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">f</span> <span class="n">demo_train_data</span><span class="p">:</span><span class="n">demo_test_data</span><span class="p">:</span><span class="n">demo_best_estimator</span> <span class="o">--</span><span class="n">params</span> <span class="n">optim_params</span> <span class="n">pred</span>
-</pre></div>
-</div>
-<p><code class="docutils literal"><span class="pre">pred</span></code> label means we are predicting, and to do prediction, we need to specify parameters for a optimization algorithm (used to find ground state electron density), the “optim_params” files looks like this:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mu</span><span class="o">=</span><span class="mi">10</span>      <span class="c1"># indicate the chemical potential</span>
-<span class="n">n</span><span class="o">=</span><span class="mi">1</span>        <span class="c1"># indicate the electron number</span>
-<span class="n">step</span><span class="o">=</span><span class="mf">0.01</span>  <span class="c1"># indicate the optimization step length</span>
-<span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span>   <span class="c1"># indicate the tolerance for optimization</span>
-</pre></div>
-</div>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#known-issue">Known issue</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -291,6 +189,13 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="intro.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
   
 
   <hr/>
