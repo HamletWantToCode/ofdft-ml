@@ -41,6 +41,9 @@ def main(argv):
             with open(Vx_fname, 'rb') as f1:
                 p_data = pickle.load(f1)
             Vx = p_data[:, 1:]
+            n_samples, n_points = Vx.shape
+            ii = np.random.randint(0, n_samples, 1)[0]
+            X = np.linspace(0, 1, n_points)
             fig2 = plt.figure(2)
             ax2 = fig2.add_subplot(111)
             ax2.fill_between(X, np.amin(Vx, axis=0), np.amax(Vx, axis=0), facecolor='silver')
