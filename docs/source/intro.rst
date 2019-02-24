@@ -111,7 +111,9 @@ and then run::
 	
 ``-r`` indicate the ratio of test set's size over the whole dataset's size, ``-n`` indicate the number of folds used in cross validation.
 
-**NOTE**: The grid search program is implemented by Python's `multiprocessing` module, it will use all your available CPU resources by default.
+You can also use MPI to utilize speed up the grid search process::
+
+	mpirun -n 4 model_selection.py --f_dens density_in_x --f_grad potential_in_x -r 0.4 -n 5 --params model_params
 
 Machine learning & prediction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
