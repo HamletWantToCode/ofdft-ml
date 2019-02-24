@@ -4,18 +4,23 @@ import sys
 import getopt
 import numpy as np
 import pickle
+from itertools import product
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
+from mpi4py import MPI
 
 from ofdft_ml.statslib.kernel_ridge import KernelRidge
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis
 from ofdft_ml.statslib.new_grid_search import NewGridSearchCV
 from ofdft_ml.statslib.new_pipeline import NewPipeline
 from ofdft_ml.statslib.new_scorer import make_scorer
-# from ofdft_ml.statslib.old import MyGridSearchCV, MyPipe, make_scorer
 from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
 
 def main(argv, R=np.random.RandomState(32892)):
+    # MPI setup
+    comm = MPI.COMM_WORLD
+    SIZE = comm.Get_size()
+    ID = comm.Get_rank()
     # parsing parameter
     def usage():
         print("""
@@ -63,30 +68,39 @@ def main(argv, R=np.random.RandomState(32892)):
     neg_mean_squared_error_scorer = make_scorer(mean_squared_error)
     pipe = NewPipeline([('reduce_dim', PrincipalComponentAnalysis()),\
                    ('regressor', KernelRidge(kernel=rbf_kernel, kernel_gd=rbf_kernel_gradient))])
-    param_grid = [
-                {
-                'reduce_dim__n_components': N_COMPONENTS,
-                'regressor__C': np.logspace(LOW_C, HIGH_C, N_GRIDS),        
-                'regressor__gamma': np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)
-                }
-                ]
+    # Distribute parameters to each process
+    all_params = product(N_COMPONENTS, list(np.logspace(LOW_C, HIGH_C, N_GRIDS)),\
+                         list(np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)))
+    all_params_list = list(all_params)
+    param_grid = []
+    for n_components_, c_, gamma_ in all_params_list[ID::SIZE]:
+        param_grid.append(
+                    {
+                    'reduce_dim__n_components': [n_components_],
+                    'regressor__C': [c_],        
+                    'regressor__gamma': [gamma_] 
+                    }
+        )
     grid_search = NewGridSearchCV(pipe, param_grid, cv=n_CV, scoring=neg_mean_squared_error_scorer)
     grid_search.fit(densx_train, Ek_train, dEkx_train)
-    print('best parameters:\n', grid_search.best_params_, '\n')
-    test_score = grid_search.cv_results_['mean_test_score']
-    best_score_index = grid_search.best_index_
-    print('test score (mse):', -test_score[best_score_index])
-
-    best_estimator = grid_search.best_estimator_
-
-    with open('demo_best_estimator', 'wb') as f2:
-        pickle.dump(best_estimator, f2)
-    with open('demo_train_data', 'wb') as f3:
-        train_data = np.c_[Ek_train.reshape((-1, 1)), densx_train, dEkx_train]
-        pickle.dump(train_data, f3)
-    with open('demo_test_data', 'wb') as f4:
-        test_data = np.c_[Ek_test.reshape((-1, 1)), densx_test, dEkx_test]
-        pickle.dump(test_data, f4)
+    best_params_on_node = grid_search.best_params_
+    best_estimator_on_node = grid_search.best_estimator_
+    best_score_on_node = abs(grid_search.best_score_)
+    collect_scores = np.zeros((SIZE, 2))
+    # Gather data from each process
+    comm.Allgather(np.array([best_score_on_node, ID]), collect_scores)
+    best_rank = int(collect_scores[np.argmin(collect_scores[:, 0]), 1])
+    if ID == best_rank:
+        print(print('best parameters:\n', best_params_on_node, '\n'))
+        print('test score (mse):', best_score_on_node)
+        with open('demo_best_estimator', 'wb') as f2:
+            pickle.dump(best_estimator_on_node, f2)
+        with open('demo_train_data', 'wb') as f3:
+            train_data = np.c_[Ek_train.reshape((-1, 1)), densx_train, dEkx_train]
+            pickle.dump(train_data, f3)
+        with open('demo_test_data', 'wb') as f4:
+            test_data = np.c_[Ek_test.reshape((-1, 1)), densx_test, dEkx_test]
+            pickle.dump(test_data, f4)
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

@@ -5,8 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add cluster method into our workflow, to identify patterns within the low dimenisonal data
+
+## 0.4.0 - 2019-02-25 
+### Changed
+- 'NewGridSearchCV' based on multiprocessing not run in parallel, change it's implementation to MPI
+
 ### Fixed
-- Fixed bug in 'plot_rawdata' when process Vx data only
+- Fixed bug in 'plot_rawdata', this bug will throw an error if you only feed Vx data into the program
 
 ## 0.3.0 - 2019-02-20
 ### Added

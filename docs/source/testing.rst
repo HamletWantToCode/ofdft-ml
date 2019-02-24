@@ -16,3 +16,4 @@ Known issue
 
 * To solve linear equations involved in our algorithm, we use a method based on singular value decomposition, this method will fail to reach the required precision if the matrix formed by the coefficients of the linear equaitons is ill-conditioned.
 * The accuracy of kinetic energy is related to the number of k points in 1st BZ, to reach high precision, you need more k points.
+* The accuracy of energy level difference in harmonic oscillator, to reach high precision, you need large potential strength.

@@ -4,11 +4,10 @@ from sklearn.base import clone
 from sklearn.model_selection._search import ParameterGrid
 from sklearn.model_selection import BaseCrossValidator, KFold
 from sklearn.utils.metaestimators import if_delegate_has_method
-from multiprocessing import Pool, Pipe
 
 __all__ = ['NewGridSearchCV']
 
-def _fit_and_score(estimator, X, y, dy, scorer, cv, n_splits, parameters, s_port):
+def _fit_and_score(estimator, X, y, dy, scorer, cv, parameters):
     cv_test_scores = []
     test_sample_counts = []
     for (train_index, test_index) in cv.split(X, y):
@@ -22,8 +21,8 @@ def _fit_and_score(estimator, X, y, dy, scorer, cv, n_splits, parameters, s_port
         estimator.fit(train_X, train_y, train_dy)
         if dy is None:
             test_score = scorer(estimator, test_X, test_y)
-        elif hasattr(estimator, 'steps'):
-            transformer = estimator.steps[0][1]     # only has one pca transformer now !
+        elif hasattr(estimator, 'steps'):          # if we reduce the dimension of the space, we need to transform the gradient in original space to the new space
+            transformer = estimator.steps[0][1]       # only has one pca transformer now !
             test_dy_ = transformer.transform_gradient(test_dy)
             test_score = scorer(estimator, test_X, test_y, test_dy_)
         else:
@@ -31,14 +30,10 @@ def _fit_and_score(estimator, X, y, dy, scorer, cv, n_splits, parameters, s_port
         cv_test_scores.append(test_score)
         test_sample_counts.append(len(test_index))
     mean_cv_score = np.average(cv_test_scores, weights=test_sample_counts)
-    s_port.send((mean_cv_score, parameters))
-
-def _read_data(r_port):
-    return r_port.recv()
+    return mean_cv_score
 
 class NewGridSearchCV(object):
-    def __init__(self, estimator, params_grid, scoring=None,\
-                 cv=None, n_jobs=None):
+    def __init__(self, estimator, params_grid, scoring=None, cv=None):
         """
         :estimator: estimator
         :fit_params: fitting parameter for the estimator
@@ -49,7 +44,6 @@ class NewGridSearchCV(object):
         self.params_grid = params_grid
         self.scoring = scoring
         self.cv = cv
-        self.n_jobs = n_jobs
 
     def _get_param_iterator(self):
         return ParameterGrid(self.params_grid)
@@ -67,22 +61,12 @@ class NewGridSearchCV(object):
         base_estimator = clone(self.estimator)
         scorer = self.scoring
         cv = self._get_cv()
-        n_splits = cv.get_n_splits()
         model_params_iter = self._get_param_iterator()
         all_results = []
-        # multiprocessing setting
-        recv_port, send_port = Pipe(duplex=False)
-        read_process = Pool(1)
-        with Pool(self.n_jobs) as pool:
-            for params in model_params_iter:
-                res = pool.apply_async(_fit_and_score, args=(clone(base_estimator), X, y, dy,\
-                                                       scorer, cv, n_splits, params, send_port))
-                out = read_process.apply(_read_data, args=(recv_port,))
-                all_results.append(out)
-            pool.close()
-            pool.join()
-        read_process.close()
-        read_process.join()
+        # grid search loop
+        for params in model_params_iter:
+            score_ = _fit_and_score(clone(base_estimator), X, y, dy, scorer, cv, params)
+            all_results.append((score_, params))
         all_mean_scores, all_params_list = zip(*all_results)
         # format output
         cv_results = {}
