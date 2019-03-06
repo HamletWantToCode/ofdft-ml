@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - 2019-03-06
 ### Added
-- Add cluster method into our workflow, to identify patterns within the low dimenisonal data
+- 'GaussProcess': implement Bayes method with Gauss process prior as a function fitting tool
+- 'test_gp': test suit for Gauss process regressor
+
+### Changed
+- 'test_KRR': split the original file into 'test_KRR' and 'test_kernel'
 
 ## 0.4.0 - 2019-02-25 
 ### Changed
