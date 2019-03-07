@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2019-03-06
 ### Added
-- 'GaussProcess': implement Bayes method with Gauss process prior as a function fitting tool
+- 'GaussProcess': implement Bayes method with Gauss process prior as a function fitting tool; hyperparameters are choose by optimize the marginal likelihood
 - 'test_gp': test suit for Gauss process regressor
 
 ### Changed

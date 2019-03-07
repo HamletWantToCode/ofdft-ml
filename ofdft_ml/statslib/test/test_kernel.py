@@ -18,6 +18,17 @@ def test_kernel_matrix():
     assert_array_almost_equal(sklearn_common, my, 7)
     assert_array_almost_equal(sklearn_gp, my, 7)
 
+def test_kernel_gradient_on_hyper_params():
+    """
+    f'(x)=(f(x+h)-f(x)) / h + O(h)
+    """
+    gamma = 5
+    K, my = rbf_kernel(gamma, X, X, gradient_on_gamma=True)
+    gamma_ = gamma + 1e-3
+    K_ = rbf_kernel(gamma_, X, X)
+    numeric = (K_ - K) / 1e-3
+    assert_array_almost_equal(numeric, my, 3)
+
 def test_kernel_gradient():
     """
     test against f'(x)=(f(x+h) - f(x-h)) / 2*h + O(h^2)

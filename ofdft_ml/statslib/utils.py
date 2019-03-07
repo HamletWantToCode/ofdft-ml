@@ -4,9 +4,14 @@ import numpy as np
 from ..ext_math import euclidean_distance
 
 # kernel
-def rbf_kernel(gamma, X, Y):
+def rbf_kernel(gamma, X, Y, gradient_on_gamma=False):
     square_distance = (euclidean_distance(X, Y))**2
-    return np.exp(-gamma*square_distance)
+    K = np.exp(-gamma*square_distance)
+    if gradient_on_gamma:
+        K_gd_gamma = -square_distance * K
+        return K, K_gd_gamma
+    else:
+        return K
 
 def rbf_kernel_gradient(gamma, X, Y):
     square_distance = (euclidean_distance(X, Y))**2
