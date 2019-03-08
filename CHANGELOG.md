@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 'test_KRR': split the original file into 'test_KRR' and 'test_kernel'
+- 'ext_math': SVD or Cholesky decomposition will be done out side the sovler function
 
 ## 0.4.0 - 2019-02-25 
 ### Changed

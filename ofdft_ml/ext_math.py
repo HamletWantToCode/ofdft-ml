@@ -11,9 +11,8 @@ def svd_inv(X):
     return X_inv
 
 ## used for real symmetric matrix
-def svd_solver(A, b, k=0, cond=None):
+def svd_solver(A, b, cond=None):
     n_dims = A.shape[0]
-    A += k*np.eye(n_dims)
     U, S, _ = np.linalg.svd(A)
     if cond is None:
         cond = np.finfo(np.float64).eps
@@ -23,11 +22,8 @@ def svd_solver(A, b, k=0, cond=None):
     return x
 
 # used for Hermitian positive-definite matrix
-def cholesky_solver(A, b, k=0):
-    assert np.all(np.linalg.eigvals(A) > 0), print('matrix not positive definite !')
-    n_dims = A.shape[0]
-    A += k*np.eye(n_dims)          # regularization
-    L = np.linalg.cholesky(A)
+def cholesky_solver(L, b):
+    n_dims = len(L)
     Lh = L.T.conj()
     y = np.zeros(n_dims)
     for i in range(n_dims):
@@ -36,19 +32,6 @@ def cholesky_solver(A, b, k=0):
     for i in range(n_dims-1, -1, -1):
         x[i] = (y[i] - Lh[i] @ x) / Lh[i, i]
     return x
-
-# def iterative_solver(A, b, k=0, max_iters=1000, std_err=1e-5):
-#     n_dims = A.shape[0]
-#     x0 = 1e-3*np.ones(n_dims)
-#     for i in range(max_iters):
-#         b_ = b - A @ x0
-#         z0 = cholesky_solver(A, b_, k)
-#         x0 += z0
-#         error = np.amax(abs(z0))
-#         if error < std_err:
-#             print('solution converge after %d of iterations' %(i+1))
-#             break
-#     return x0
 
 # math
 def euclidean_distance(X, Y):
