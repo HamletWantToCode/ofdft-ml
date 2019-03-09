@@ -48,7 +48,9 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         return coef_, L, K_gd_on_gamma
 
     def fit(self, X, y):
-        X, y = check_X_y(X, y, y_numeric=True)
+        X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
+        if y.ndim > 1:
+            y = y.ravel()
         self._n_dim = len(X)
         self._ytrain_mean = np.mean(y)
         self.X_train_, self.y_train_ = X, y-self._ytrain_mean
