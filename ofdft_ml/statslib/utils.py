@@ -14,33 +14,37 @@ def rbf_kernel(gamma, X, Y, gradient_on_gamma=False):
         return K
 
 def rbf_kernel_gradient(gamma, X, Y):
+    n_samples_X, n_features_X = X.shape
+    n_samples_Y, n_features_Y = Y.shape
+    assert n_features_X == n_features_Y, print('feature dimension of train and predict data mismatch')
     square_distance = (euclidean_distance(X, Y))**2
     K = np.exp(-gamma*square_distance)
+    # column_matrix_list = []
+    # for i in range(n_samples_X):
+    #     row_matrix_list = []
+    #     for j in range(n_samples_Y):
+    #         x_diff = X[i] - Y[j]
+    #         inner_vector = -2*gamma*x_diff*K[i, j]
+    #         row_matrix_list.append(inner_vector)
+    #     column_matrix_list.append(row_matrix_list)
+    # K_gd = np.block(column_matrix_list).T
     diff = X[:, :, np.newaxis] - Y.T 
     K_gd = -2*gamma*diff*K[:, np.newaxis, :]
-    return K_gd
+    return K_gd.reshape((-1, n_samples_Y))
 
-def rbf_kernel_hessian(gamma, X, Y):
-    _, n_dims = X.shape
+def rbf_kernel_2nd_gradient(gamma, X, Y):
+    n_samples_X, n_features_X = X.shape
+    n_samples_Y, n_features_Y = Y.shape
+    assert n_features_X == n_features_Y, print('feature dimension of train and predict data mismatch')
     square_distance = (euclidean_distance(X, Y))**2
     K = np.exp(-gamma*square_distance)
-    diff = X[:, :, np.newaxis] - Y.T 
-    K_hessian = 2*gamma*(np.eye(n_dims)[np.newaxis, :, :, np.newaxis] - \
-                         2*gamma*diff[:, :, np.newaxis, :]*diff[:, np.newaxis, :, :])\
-                *K[:, np.newaxis, np.newaxis, :]
-    return K_hessian
-
-# def rbf_kernel_hessan(gamma, X, Y):
-#     (N_ts, D), N_tr = X.shape, Y.shape[0]
-#     square_distance = (euclidean_distance(X, Y))**2
-#     K = np.exp(-gamma*square_distance)
-#     K_hess = np.zeros((N_ts*D, N_tr*D))
-#     E = np.eye(D)
-#     for i in range(0, N_ts*D, D):
-#         m = i//D
-#         for j in range(0, N_tr*D, D):
-#             n = j//D
-#             diff = X[m] - Y[n] 
-#             K_hess[i:i+D, j:j+D] = (E - 2*gamma*diff[:, np.newaxis]*diff[np.newaxis, :])*K[m, n]
-#     K_hess *= 2*gamma
-#     return K_hess
+    column_matrix_list = []
+    for i in range(n_samples_X):
+        row_matrix_list = []
+        for j in range(n_samples_Y):
+            x_diff = X[i] - Y[j]
+            inner_matrix = 2*gamma*K[i, j]*(np.eye(n_feature) + 2*gamma*np.outer(x_diff, x_diff))
+            row_matrix_list.append(inner_matrix)
+        column_matrix_list.append(row_matrix_list)
+    K_2nd_gradient = np.block(column_matrix_list)
+    return K_2nd_gradient

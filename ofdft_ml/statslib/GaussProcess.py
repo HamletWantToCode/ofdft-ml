@@ -78,5 +78,6 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def predict_gradient(self, X):
         assert self.kernel_gd is not None, print('compute gradient need kernel gradient !')
         X = check_array(X)
+        n_samples, n_features = X.shape
         dy_pred = self.kernel_gd(self.gamma, X, self.X_train_) @ self.coef_
-        return dy_pred
+        return dy_pred.reshape((n_features, n_samples)).T

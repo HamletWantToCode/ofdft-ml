@@ -35,7 +35,7 @@ def test_kernel_gradient():
     """
     gamma = 0.1
     x, x_ref = X[0], X[1]
-    my = rbf_kernel_gradient(gamma, x[np.newaxis, :], x_ref[np.newaxis, :])[0, :, 0]
+    my = rbf_kernel_gradient(gamma, x[np.newaxis, :], x_ref[np.newaxis, :])[:, 0]
     numerical = []
     for i in range(D):
         h = np.zeros_like(x)

@@ -53,7 +53,7 @@ class KernelRidge(BaseEstimator, RegressorMixin):
         n_dims = X.shape[0]
         A = self.kernel(self.gamma, X, X) + self.C*n_dims*np.eye(n_dims)
         self.cond_ = np.linalg.cond(A)
-        self.coef_ = svd_solver(A, y, k=0)
+        self.coef_ = svd_solver(A, y)
         return self
 
     def predict(self, X):
@@ -78,5 +78,6 @@ class KernelRidge(BaseEstimator, RegressorMixin):
         """
         assert self.kernel_gd is not None, print('need to specify gradient of kernel !')
         X = check_array(X)
+        n_samples, n_features = X.shape
         dy_pred = self.kernel_gd(self.gamma, X, self.X_fit_) @ self.coef_
-        return dy_pred
+        return dy_pred.reshape((n_features, n_samples)).T
