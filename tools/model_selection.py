@@ -1,27 +1,18 @@
 #!/usr/bin/env python
 
+import pickle
 import sys
 import getopt
-import numpy as np
-import pickle
-from itertools import product
-from sklearn.metrics import mean_squared_error
+import numpy as np 
 from sklearn.model_selection import train_test_split
-from mpi4py import MPI
+from sklearn.model_selection import GridSearchCV
 
-from ofdft_ml.statslib.kernel_ridge import KernelRidge
-from ofdft_ml.statslib.pca import PrincipalComponentAnalysis
-from ofdft_ml.statslib.new_grid_search import NewGridSearchCV
-from ofdft_ml.statslib.new_pipeline import NewPipeline
-from ofdft_ml.statslib.new_scorer import make_scorer
+from ofdft_ml.statslib.pipeline import NewPipeline
+from ofdft_ml.statslib.pca import PrincipalComponentAnalysis as PCA
+from ofdft_ml.statslib.GaussProcess import GaussProcessRegressor
 from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
 
-def main(argv, R=np.random.RandomState(32892)):
-    # MPI setup
-    comm = MPI.COMM_WORLD
-    SIZE = comm.Get_size()
-    ID = comm.Get_rank()
-    # parsing parameter
+def main(argv):
     def usage():
         print("""
               usage:
@@ -42,11 +33,11 @@ def main(argv, R=np.random.RandomState(32892)):
         elif opt == '--f_dens':
             with open(val, 'rb') as f:
                 data = pickle.load(f)
-                densx, Ek = data[:, 1:], data[:, 0]
+                X_density, Ek = data[:, 1:], data[:, 0]
         elif opt == '--f_grad':
             with open(val, 'rb') as f1:
                 potential = pickle.load(f1)
-                dEkx = -potential[:, 1:]
+                X_dEk = -potential[:, 1:]
         elif opt == '-r': test_ratio = float(val)
         elif opt == '-n': n_CV = int(val)
         elif opt == '--params':
@@ -56,51 +47,44 @@ def main(argv, R=np.random.RandomState(32892)):
                     if line[:ii] == 'n_components':
                         nums = line[(ii+1):].split(':')
                         N_COMPONENTS = [int(v) for v in nums]
-                    elif line[:ii] == 'C':
-                        low, up = line[(ii+1):].split(':')
-                        LOW_C, HIGH_C = float(low), float(up)
                     elif line[:ii] == 'gamma':
-                        low, up = line[(ii+1):].split(':')
-                        LOW_GAMMA, HIGH_GAMMA = float(low), float(up)
-                    elif line[:ii] == 'ngrid': N_GRIDS = int(line[(ii+1):])
-    densx_train, densx_test, Ek_train, Ek_test, dEkx_train, dEkx_test = train_test_split(densx,\
-                                                      Ek, dEkx, test_size=test_ratio, random_state=R)
-    neg_mean_squared_error_scorer = make_scorer(mean_squared_error)
-    pipe = NewPipeline([('reduce_dim', PrincipalComponentAnalysis()),\
-                   ('regressor', KernelRidge(kernel=rbf_kernel, kernel_gd=rbf_kernel_gradient))])
-    # Distribute parameters to each process
-    all_params = product(N_COMPONENTS, list(np.logspace(LOW_C, HIGH_C, N_GRIDS)),\
-                         list(np.logspace(LOW_GAMMA, HIGH_GAMMA, N_GRIDS)))
-    all_params_list = list(all_params)
-    param_grid = []
-    for n_components_, c_, gamma_ in all_params_list[ID::SIZE]:
-        param_grid.append(
-                    {
-                    'reduce_dim__n_components': [n_components_],
-                    'regressor__C': [c_],        
-                    'regressor__gamma': [gamma_] 
-                    }
-        )
-    grid_search = NewGridSearchCV(pipe, param_grid, cv=n_CV, scoring=neg_mean_squared_error_scorer)
-    grid_search.fit(densx_train, Ek_train, dEkx_train)
-    best_params_on_node = grid_search.best_params_
-    best_estimator_on_node = grid_search.best_estimator_
-    best_score_on_node = abs(grid_search.best_score_)
-    collect_scores = np.zeros((SIZE, 2))
-    # Gather data from each process
-    comm.Allgather(np.array([best_score_on_node, ID]), collect_scores)
-    best_rank = int(collect_scores[np.argmin(collect_scores[:, 0]), 1])
-    if ID == best_rank:
-        print(print('best parameters:\n', best_params_on_node, '\n'))
-        print('test score (mse):', best_score_on_node)
-        with open('demo_best_estimator', 'wb') as f2:
-            pickle.dump(best_estimator_on_node, f2)
-        with open('demo_train_data', 'wb') as f3:
-            train_data = np.c_[Ek_train.reshape((-1, 1)), densx_train, dEkx_train]
-            pickle.dump(train_data, f3)
-        with open('demo_test_data', 'wb') as f4:
-            test_data = np.c_[Ek_test.reshape((-1, 1)), densx_test, dEkx_test]
-            pickle.dump(test_data, f4)
+                        gamma = float(line[(ii+1):])
+                    elif line[:ii] == 'beta':
+                        beta = float(line[(ii+1):])
+                    elif line[:ii] == 'params_bounds':
+                        bounds = line[(ii+1):].split(':')
+                        bounds = ((float(bounds[0]), float(bounds[1])), (float(bounds[2]), float(bounds[3])))
+
+    train_X_density, test_X_density, train_Ek, test_Ek,\
+                               train_X_dEk, test_X_dEk = train_test_split(X_density, Ek, X_dEk, test_size=test_ratio, random_state=5)
+
+    GPR = GaussProcessRegressor(gamma, beta, kernel=rbf_kernel,
+                                kernel_gd=rbf_kernel_gradient, optimize=True,
+                                params_bounds=bounds)
+    pipe = NewPipeline([('reduce_dim', PCA()), ('regressor', GPR)])
+    gCV = GridSearchCV(pipe, param_grid={'reduce_dim__n_components': N_COMPONENTS}, 
+                       cv=n_CV, scoring='neg_mean_squared_error')
+
+    gCV.fit(train_X_density, train_Ek)
+    best_estimator = gCV.best_estimator_
+    n_components_ = best_estimator.named_steps['reduce_dim'].n_components
+    gamma_ = best_estimator.named_steps['regressor'].gamma
+    beta_ = best_estimator.named_steps['regressor'].beta
+    print("""
+          The optimal parameters after training are:
+            PCA components: %d\n
+            GP gamma:       %.5f\n
+            GP beta:        %.5E\n
+          """ %(n_components_, gamma_, beta_))
+
+    with open('demo_best_estimator', 'wb') as f_out:
+        pickle.dump(best_estimator, f_out)
+    with open('demo_train_data', 'wb') as f_train:
+        train_data = np.c_[train_Ek.reshape((-1, 1)), train_X_density, train_X_dEk]
+        pickle.dump(train_data, f_train)
+    with open('demo_test_data', 'wb') as f_test:
+        test_data = np.c_[test_Ek.reshape((-1, 1)), test_X_density, test_X_dEk]
+        pickle.dump(test_data, f_test)
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

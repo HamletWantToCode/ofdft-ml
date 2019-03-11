@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2019-03-06
+## [Unreleased]
+### Added
+- 'statslib.GaussProcess': add multiple startups, able to jump out of local minimum
+- 'quantum.utils': use superposition of Gauss function instead of cosin functions, directly sample from Fourier transform of Gauss
+
+### Changed
+- 'tools/model_selection': combine grid search and optimization method, much efficient than before
+
+### Removed
+- 'statslib.new_scorer'
+- 'statslib.new_grid_search'
+- 'statslib.kernel_ridge'
+- 'tools/data_centre'
+
+## 0.5.0 - 2019-03-11
 ### Added
 - 'GaussProcess': implement Bayes method with Gauss process prior as a function fitting tool; hyperparameters are choose by optimize the marginal likelihood
 - 'statslib.utils': add kernel function for derivative of gaussian process
