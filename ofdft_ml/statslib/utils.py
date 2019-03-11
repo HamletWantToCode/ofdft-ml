@@ -32,7 +32,7 @@ def rbf_kernel_gradient(gamma, X, Y):
     K_gd = -2*gamma*diff*K[:, np.newaxis, :]
     return K_gd.reshape((-1, n_samples_Y))
 
-def rbf_kernel_2nd_gradient(gamma, X, Y):
+def rbf_kernel_2nd_gradient(gamma, X, Y, gradient_on_gamma=False):
     n_samples_X, n_features_X = X.shape
     n_samples_Y, n_features_Y = Y.shape
     assert n_features_X == n_features_Y, print('feature dimension of train and predict data mismatch')
@@ -43,8 +43,8 @@ def rbf_kernel_2nd_gradient(gamma, X, Y):
         row_matrix_list = []
         for j in range(n_samples_Y):
             x_diff = X[i] - Y[j]
-            inner_matrix = 2*gamma*K[i, j]*(np.eye(n_feature) + 2*gamma*np.outer(x_diff, x_diff))
+            inner_matrix = 2*gamma*K[i, j]*(np.eye(n_features_X) + 2*gamma*np.outer(x_diff, x_diff))
             row_matrix_list.append(inner_matrix)
         column_matrix_list.append(row_matrix_list)
     K_2nd_gradient = np.block(column_matrix_list)
-    return K_2nd_gradient
+    return K_2nd_gradient, None

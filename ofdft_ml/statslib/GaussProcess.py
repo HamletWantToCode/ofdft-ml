@@ -47,7 +47,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         coef_ = cho_solve((L, True), y)
         return coef_, L, K_gd_on_gamma
 
-    def fit(self, X, y):
+    def fit(self, X, y, verbose=False):
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
         if y.ndim > 1:
             y = y.ravel()
@@ -59,8 +59,9 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
             res = minimize(self.neg_log_likelihood, hyperparams, args=(self.X_train_, self.y_train_),\
                            method='L-BFGS-B',\
                            jac=self.neg_log_likelihood_prime,\
-                           bounds=self.params_bounds, options={'gtol': 1e-6, 'disp': True})
-            print(res.success)
+                           bounds=self.params_bounds, options={'disp': verbose})
+            if res.success is False:
+                print('optimization %s' %(res.success))
             hyperparams = res.x
         self.gamma, self.beta = hyperparams
         self.coef_, L, _ = self._fit(hyperparams, self.X_train_, self.y_train_)
