@@ -88,18 +88,21 @@ def main(argv):
         with open(fname, 'r') as f:
             for line in f:
                 ii = line.index('=')
-                if line[:ii]=='n_cosin': N_COS = int(line[(ii+1):])
+                if line[:ii]=='n_gauss': N_GAUSS = int(line[(ii+1):])
                 if line[:ii]=='n_basis': N_BASIS = int(line[(ii+1):])
                 if line[:ii]=='n_kpoints': N_KPOINTS = int(line[(ii+1):])
                 if line[:ii]=='occ': OCC = int(line[(ii+1):])
                 elif line[:ii] == 'V0': 
                     low, up = line[(ii+1):].split(':')
                     LOW_V0, HIGH_V0 = float(low), float(up)
-                elif line[:ii] == 'Phi0':
+                elif line[:ii] == 'Mu':
                     low, up = line[(ii+1):].split(':') 
-                    LOW_Phi0, HIGH_Phi0 = float(low), float(up)
-        param_gen = kpotential_gen(N_BASIS, N_COS, LOW_V0, HIGH_V0,
-                                   LOW_Phi0, HIGH_Phi0, RANDOM_SEED)
+                    LOW_Mu, HIGH_Mu = float(low), float(up)
+                elif line[:ii] == 'scale':
+                    low, up = line[(ii+1):].split(':')
+                    LOW_L, HIGH_L = float(low), float(up)
+        param_gen = kpotential_gen(N_BASIS, N_GAUSS, LOW_V0, HIGH_V0,
+                                   LOW_Mu, HIGH_Mu, LOW_L, HIGH_L, RANDOM_SEED)
         # storage
         POTENTIAL_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)
         DATA_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)
