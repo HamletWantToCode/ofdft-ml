@@ -35,7 +35,8 @@ def main(argv):
         elif opt == '--f_grad':
             with open(val, 'rb') as f1:
                 potential = pickle.load(f1)
-                X_dEk = -potential[:, 1:]
+                mu, X_Vx = potential[:, :1], potential[:, 1:]
+                X_dEk = mu - X_Vx
         elif opt == '-r': test_ratio = float(val)
         elif opt == '--params':
             with open(val, 'r') as f:
