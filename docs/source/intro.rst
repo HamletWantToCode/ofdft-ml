@@ -96,31 +96,31 @@ the ``proc`` tag is used to indicate the data preprocessing mode.
 Model selection
 ^^^^^^^^^^^^^^^
 
-Usually, machine learing models contain hyperparameters, you will need to specify these parameters properly before fed data to the model. We provide a cross validation method that could help you choose best hyperparameters out of a set of candidates. 
+Usually, machine learing models contain hyperparameters, you will need to specify these parameters properly before actually start learning. In our code, we select those hyperparameters based on maximum likelihood estimation (MLE).
+
+.. math::
+
+	\theta^*=\arg\max_{\theta}P(\boldsymbol{D}|\theta)
 
 To do grid search, you need first specify the hyperparameter set in the "model_params" file::
 
 	n_components=1 # number of PCA components
-	C=-15:-8       # the upper & lower bound of penalty factor of kernel ridge regression (log based)
-	gamma=-8:-1    # the upper & lower bound of gamma parameter for RBF kernel (log based)
-	ngrid=50       # number of grids in each parameter dimension
+	gamma=1e-3     # the initial guess for the gamma parameter for RBF kernel
+	beta=1e-8      # the initial guess for beta parameter to control the condition of kernel matrix
+	params_bounds=1e-5:1e-1:1e-10:1e-6  # searching region for each parameter
 
 and then run::
 
-	model_selection.py --f_dens density_in_x --f_grad potential_in_x -r 0.4 -n 5 --params model_params
+	model_selection.py --f_dens density_in_x --f_grad potential_in_x -r 0.4 --params model_params
 	
-``-r`` indicate the ratio of test set's size over the whole dataset's size, ``-n`` indicate the number of folds used in cross validation.
-
-You can also use MPI to utilize speed up the grid search process::
-
-	mpirun -n 4 model_selection.py --f_dens density_in_x --f_grad potential_in_x -r 0.4 -n 5 --params model_params
+``-r`` indicate the ratio of test set's size over the whole dataset's size.
 
 Machine learning & prediction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Cross validation will help us choose the best hyperparamter, and train a machine learning model with those parameters (stored in "demo_best_estimator"), it will also generate training and testing data, which are contained in "demo_train_data" and "demo_test_data". Our prediction will use these data files to predict kinetic energy and ground state electron density of a new sample. To do prediction, run::
+Cross validation will help us choose the best hyperparamter, and train a machine learning model with those parameters (stored in "best_estimator" and "best_gd_estimator"), it will also generate training and testing data, which are contained in "train_data" and "test_data". Our prediction will use these data files to predict kinetic energy and ground state electron density of a new sample. To do prediction, run::
 
-	data_process.py -f demo_train_data:demo_test_data:demo_best_estimator --params optim_params pred
+	data_process.py -f train_data:test_data:best_estimator:best_gd_estimator --params optim_params pred
 
 ``pred`` tag means we are predicting, and since we are using gradient descent method to solve Euler Lagrange equation, you need to specify some optimization parameter for prediction, these parameters are written in the "optim_params" file::
 
