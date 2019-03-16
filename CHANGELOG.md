@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Added
 - 'statslib.GaussProcess': add multiple startups, able to jump out of local minimum
+
+## 0.5.1 - 2019-03-16
+### Added
 - 'quantum.utils': use superposition of Gauss function instead of cosin functions, directly sample from Fourier transform of Gauss
 
 ### Changed
@@ -17,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 'statslib.new_grid_search'
 - 'statslib.kernel_ridge'
 - 'tools/data_centre'
+
+### Fixed
+- 'statslib.utils': fix the computation error in "rbf_kernel_2nd_gradient"
 
 ## 0.5.0 - 2019-03-11
 ### Added

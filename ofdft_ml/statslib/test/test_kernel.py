@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 from scipy.optimize import approx_fprime
 from numpy.testing import assert_array_almost_equal
 from sklearn.metrics.pairwise import pairwise_kernels
@@ -49,7 +49,7 @@ def test_kernel_gradient():
 def test_kernel_2nd_gradient():
     gamma = 0.001
     x0, x1 = X[0], X[1]
-    my, _ = rbf_kernel_2nd_gradient(gamma, x0[np.newaxis, :], x1[np.newaxis, :])
+    my = rbf_kernel_2nd_gradient(gamma, x0[np.newaxis, :], x1[np.newaxis, :])
     numeric = np.zeros((D, D))
     for i in range(D):
         h = np.zeros_like(x0)
@@ -57,14 +57,14 @@ def test_kernel_2nd_gradient():
         x0_f, x0_b = x0+h, x0-h
         for j in range(D):
             k = np.zeros_like(x1)
-            k[j] += 1e-5
+            k[j] += 1e-3
             x1_f, x1_b = x1+k, x1-k
             numeric[i, j] = (rbf_kernel(gamma, x0_f[np.newaxis, :], x1_f[np.newaxis, :])\
                              - rbf_kernel(gamma, x0_f[np.newaxis, :], x1_b[np.newaxis, :])\
                              - rbf_kernel(gamma, x0_b[np.newaxis, :], x1_f[np.newaxis, :])\
-                             + rbf_kernel(gamma, x0_b[np.newaxis, :], x1_b[np.newaxis, :]))[0, 0] / (4*1e-8)
+                             + rbf_kernel(gamma, x0_b[np.newaxis, :], x1_b[np.newaxis, :]))[0, 0] / (4*1e-6)
     print(abs(numeric-my))
-    assert_array_almost_equal(numeric, my, 3)
+    assert_array_almost_equal(numeric, my, 6)
 
 
 
