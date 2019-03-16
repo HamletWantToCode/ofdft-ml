@@ -127,7 +127,7 @@ def main(argv):
         for (opt, val) in opt_vals:
             if opt in ['-f', '--file']:
                 fnames = val
-                train_fname, test_fname, estimator_fname = fnames.split(':')
+                train_fname, test_fname, estimator_fname, gd_estimator_fname = fnames.split(':')
                 with open(train_fname, 'rb') as f:
                     train_data = pickle.load(f)
                 n_space = train_data.shape[1] - 1
@@ -137,6 +137,8 @@ def main(argv):
                 test_densx, test_Ek, test_gradx = test_data[:, 1:1+n_space//2], test_data[:, 0], test_data[:, 1+n_space//2:]
                 with open(estimator_fname, 'rb') as f2:
                     estimator = pickle.load(f2)
+                with open(gd_estimator_fname, 'rb') as f3:
+                    gd_estimator = pickle.load(f3)
             elif opt == '--params':
                 param_fname = val 
                 with open(param_fname, 'r') as ft:
@@ -156,8 +158,9 @@ def main(argv):
         dens_init = train_densx[i]
         dens_targ, gradx_targ = test_densx[j], test_gradx[j]
         Vx_targ = -gradx_targ
-        pred_gradx = estimator.named_steps['reduce_dim'].inverse_transform_gradient(estimator.predict_gradient(dens_targ[np.newaxis, :]))[0]
-        optimizer = EulerSolver(estimator)
+        pred_gradx_t = gd_estimator.predict(dens_targ[np.newaxis, :])[np.newaxis, :]
+        pred_gradx = gd_estimator.named_steps['reduce_dim'].inverse_transform_gradient(pred_gradx_t)[0]
+        optimizer = EulerSolver(estimator, gd_estimator)
         dens_predict = optimizer.run(dens_init[np.newaxis, :], Vx_targ, mu,\
                                       n_electron, step, tol, verbose=True)
         predict_results(test_Ek, pred_Ek, dens_init, dens_predict, dens_targ, gradx_targ, pred_gradx)

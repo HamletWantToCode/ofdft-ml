@@ -6,6 +6,8 @@ from scipy.linalg import cho_solve
 
 from .utils import rbf_kernel
 
+__all__ = ['GaussProcessRegressor']
+
 class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, gamma=1, beta=1.0, kernel=rbf_kernel,\
                  kernel_gd=None, optimize=False, params_bounds=((0, 5), (1e-5, 0.1))):
@@ -51,7 +53,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
         if y.ndim > 1:
             y = y.ravel()
-        self._n_dim = len(X)
+        self._n_dim = len(y)
         self._ytrain_mean = np.mean(y)
         self.X_train_, self.y_train_ = X, y-self._ytrain_mean
         hyperparams = np.array([self.gamma, self.beta])
