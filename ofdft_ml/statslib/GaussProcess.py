@@ -85,4 +85,4 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         X = check_array(X)
         n_samples, n_features = X.shape
         dy_pred = self.kernel_gd(self.gamma, X, self.X_train_) @ self.coef_
-        return dy_pred.reshape((n_features, n_samples)).T
+        return dy_pred.reshape((n_samples, n_features))

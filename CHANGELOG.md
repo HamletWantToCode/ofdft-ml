@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - 'statslib.GaussProcess': add multiple startups, able to jump out of local minimum
 
+## 0.5.2 - 2019-03-19
+### Fixed
+- 'statslib.GaussProcess': incorrect matrix reshape operation
+
 ## 0.5.1 - 2019-03-16
 ### Added
 - 'quantum.utils': use superposition of Gauss function instead of cosin functions, directly sample from Fourier transform of Gauss
