@@ -1,4 +1,4 @@
 {
     "restructuredtext.confPath": "${workspaceFolder}/docs/source",
-    "python.pythonPath": "/Users/hongbinren/miniconda3/envs/py-env/bin/python"
+    "python.pythonPath": "/Users/hongbinren/miniconda3/envs/tensorflow-env/bin/python"
 }

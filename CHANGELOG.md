@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - 'ofdft_ml.model': high level API for ML model
+- 'ofdft_ml.model.GPGD_model': implement an approximation method for calculate the hessian of rbf kernel, will greatly improve the efficiency
+
+### Changed
+- 'ofdft_ml.ext_math': in Euclidean distance function, no longer reshape Y matrix
 
 ## 0.5.2 - 2019-03-19
 ### Fixed

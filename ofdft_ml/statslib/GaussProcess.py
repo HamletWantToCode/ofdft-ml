@@ -17,13 +17,16 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         self.kernel_gd = kernel_gd
         self.optimize = optimize
         self.params_bounds = params_bounds
+        self._history = []
 
     def neg_log_likelihood(self, hyperparams, X, y):
         alpha, L, _ = self._fit(hyperparams, X, y)
         data_term = -0.5*(y.T @ alpha)
         K_term = -0.5*np.log(np.diag(L)).sum()
         const_term = -0.5*self._n_dim*np.log(2*np.pi)
-        return -(data_term + K_term + const_term)
+        value = -(data_term + K_term + const_term)
+        self._history.append(value)
+        return value
 
     def neg_log_likelihood_prime(self, hyperparams, X, y):
         alpha, L, K_gd_on_gamma = self._fit(hyperparams, X, y)

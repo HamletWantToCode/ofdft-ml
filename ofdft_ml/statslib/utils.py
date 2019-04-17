@@ -54,3 +54,10 @@ def rbf_kernel_2nd_gradient(gamma, X, Y, gradient_on_gamma=False):
         return K_2nd_gradient, None
     else:
         return K_2nd_gradient
+
+def approximate_rbf_kernel_hessian(gamma, X, Y, gradient_on_gamma=False):
+    K = rbf_kernel(gamma, X, Y, gradient_on_gamma=False)
+    if gradient_on_gamma:
+        return gamma*K, None
+    else:
+        return gamma*K
