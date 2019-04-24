@@ -2,7 +2,7 @@ import numpy as np
 
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis as PCA 
 from ofdft_ml.statslib.GaussProcess import GaussProcessRegressor as GPR 
-from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
+from ofdft_ml.statslib.kernel import rbf_kernel, rbf_kernel_gradient
 
 __all__ = ['GP_model']
 

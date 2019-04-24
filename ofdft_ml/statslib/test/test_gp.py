@@ -6,7 +6,7 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF
 
 from ofdft_ml.statslib.GaussProcess import GaussProcessRegressor as myGaussRegressor
-from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
+from ofdft_ml.statslib.kernel import rbf_kernel, rbf_kernel_gradient
 
 X, y = make_regression(n_features=10, random_state=0)
 n_samples, D = X.shape

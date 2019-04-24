@@ -17,7 +17,7 @@ setup(
                'tools/data_process.py',
                'tools/database.py',
                'tools/k2x.py',
-               'tools/model_selection.py',
+               'tools/model_training.py',
                'tools/plot_rawdata.py',
                ],
     platforms = 'any',
