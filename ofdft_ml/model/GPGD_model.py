@@ -38,7 +38,9 @@ class GPGD_model(object):
         train_tX = pca.fit_transform(train_X)
         train_tX_dy = pca.transform_gradient(train_X_dy)
         
-        estimator = GPR(gamma=self.gamma, beta=self.beta, kernel=rbf_kernel,
+        estimator = GPR(gamma=self.gamma,
+                        beta=self.beta,
+                        kernel=rbf_kernel,
                         optimize=True,
                         params_bounds=((1e-8, 1), (1e-12, 1e-5))) 
         estimator.fit(train_tX, train_y)
@@ -51,6 +53,7 @@ class GPGD_model(object):
             _gd_estimator = GPR(
                 gamma=self.gamma,
                 beta=self.beta,
+                mean_fn=0,
                 kernel=partial_derivative_gp_rbf_kernel,
                 optimize=False)
             _gd_estimator.fit(train_tX, train_tX_dy[:, i], i)

@@ -12,12 +12,14 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def __init__(self,
                  gamma=1,
                  beta=1.0,
+                 mean_fn=None,
                  kernel=rbf_kernel,
                  kernel_gd=None,
                  optimize=False,
                  params_bounds=((0, 10), (1e-5, 0.1))):
         self.gamma = gamma
         self.beta = beta
+        self.mean_fn = mean_fn
         self.kernel = kernel
         self.kernel_gd = kernel_gd
         self.optimize = optimize
@@ -62,7 +64,10 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         if y.ndim > 1:
             y = y.ravel()
         self._n_dim = len(y)
-        self._ytrain_mean = np.mean(y)
+        if self.mean_fn is None:
+            self._ytrain_mean = np.mean(y)
+        else:
+            self._ytrain_mean = self.mean_fn
         self.X_train_, self.y_train_ = X, y-self._ytrain_mean
         hyperparams = np.array([self.gamma, self.beta])
         if self.optimize:
