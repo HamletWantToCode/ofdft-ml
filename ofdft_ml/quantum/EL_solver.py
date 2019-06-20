@@ -2,20 +2,17 @@ import numpy as np
 from sklearn.utils import check_array
 
 class EulerSolver(object):
-    def __init__(self, estimator, gd_estimator):
-        self.tr_mat = estimator.named_steps['reduce_dim'].tr_mat_
-        self.estimator = estimator
-        self.gd_estimator = gd_estimator
+    def __init__(self, model):
+        self.tr_mat = model.transformer.tr_mat_
+        self.model = model
 
     def energy(self, dens, V, mu, N):
         _, n_points = dens.shape
-        Ek = self.estimator.predict(dens)[0]
+        Ek = self.model.predict(dens)[0]
         return Ek + np.sum((V - mu)*dens[0])*(1.0/n_points) + mu*N 
 
     def energy_gd(self, dens, V, mu):
-        _, n_points = dens.shape
-        dEkt = self.gd_estimator.predict(dens)
-        dEk = dEkt @ self.tr_mat.T
+        dEk = self.model.predict_gradient(dens)
         V_proj = (V-mu) @ self.tr_mat @ self.tr_mat.T
         return dEk + V_proj
 

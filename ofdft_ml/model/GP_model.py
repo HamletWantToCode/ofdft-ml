@@ -2,7 +2,7 @@ import numpy as np
 
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis as PCA 
 from ofdft_ml.statslib.GaussProcess import GaussProcessRegressor as GPR 
-from ofdft_ml.statslib.utils import rbf_kernel, rbf_kernel_gradient
+from ofdft_ml.statslib.kernel import rbf_kernel, rbf_kernel_gradient
 
 __all__ = ['GP_model']
 
@@ -53,7 +53,8 @@ class GP_model(object):
         return pred_y
 
     def predict_gradient(self, X):
+        n_points = X.shape[1]-1
         tX = self.transformer.transform(X)
         pred_X_dy = self.transformer.inverse_transform_gradient(self.estimator.predict_gradient(tX))
-        return pred_X_dy
+        return n_points*pred_X_dy
 
