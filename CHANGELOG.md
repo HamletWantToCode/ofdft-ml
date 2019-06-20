@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.0.0-alpha - 2019-04-24
+## 0.7.0 - 2019-04-24
 ### Added
 - 'ofdft_ml.model': high level API for ML model
+- 'ofdft_ml.statslib.pca': PCA method will have the explained variance ratio as it's feature 
 
 ### Changed
 - 'ofdft_ml.ext_math': in Euclidean distance function, no longer reshape Y matrix

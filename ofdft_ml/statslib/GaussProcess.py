@@ -46,6 +46,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def _fit(self, hyperparams, X, y, index):
         gamma, beta = hyperparams
         K, K_gd_on_gamma = self.kernel(gamma, X, X, gradient_on_gamma=True, index=index)
+        K[np.diag_indices_from(K)] += 1e-5
         K[np.diag_indices_from(K)] += beta
         try:
             L = np.linalg.cholesky(K)

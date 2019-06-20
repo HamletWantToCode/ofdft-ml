@@ -28,10 +28,11 @@ class GPGD_model(object):
 
     @beta.setter
     def beta(self, value):
-        if (value <= 1e-5) and (value >= 1e-12):
+        if (value <= 1e-5) and (value >= 1e-15):
             self._beta = value
-        else:
-            raise ValueError('beta value should range from 1e-12 to 1e-5')
+        elif value < 1e-15:
+            value = 1e-15
+            # raise ValueError('beta value should range from 1e-15 to 1e-5')
 
     def fit(self, train_X, train_y, train_X_dy):
         pca = PCA(self.n_cmp)
@@ -42,7 +43,7 @@ class GPGD_model(object):
                         beta=self.beta,
                         kernel=rbf_kernel,
                         optimize=True,
-                        params_bounds=((1e-8, 1), (1e-12, 1e-5))) 
+                        params_bounds=((1e-8, 1), (1e-15, 1e-5))) 
         estimator.fit(train_tX, train_y)
         print('Finish 1st stage fitting....')
         self.gamma = estimator.gamma        

@@ -35,11 +35,14 @@ class PrincipalComponentAnalysis(BaseEstimator, TransformerMixin):
         X = check_array(X)
         mean = np.mean(X, axis=0)
         Cov = (X - mean).T.conj() @ (X - mean)
-        U, _, _ = np.linalg.svd(Cov)
+        U, S, _ = np.linalg.svd(Cov)
+        total_var = np.sum(S)
+        explained_var_ratio = S[:self.n_components] / total_var
         tr_mat = U[:, :self.n_components]
         self.mean_ = mean
         self.tr_mat_ = tr_mat
         self.n_features_ = X.shape[1]
+        self.explained_var_ratio = explained_var_ratio
         return self
 
     def transform(self, X):
