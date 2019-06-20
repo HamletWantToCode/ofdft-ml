@@ -22,10 +22,10 @@ setup(
                ],
     platforms = 'any',
     install_requires = ['scikit-learn==0.19.1',
-                        'numpy==1.13.3',
-                        'scipy==1.1.0',
-                        'matplotlib==2.0.2',
-                        'mpi4py==2.0.0'
+                        'numpy>=1.13.3',
+                        'scipy>=1.1.0',
+                        'matplotlib>=2.0.2',
+                        'mpi4py>=2.0.0'
                        ],
     classifiers = [
                    'Programming Language :: Python :: 3.6',

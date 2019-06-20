@@ -82,33 +82,40 @@ def main(argv):
 
     elif args[0] == 'k':
         from ofdft_ml.quantum.solver import ksolver
-        from ofdft_ml.quantum.utils import kpotential_gen
+        from ofdft_ml.quantum.utils import periodic_potential
 
         fname = opt_vals[1][1]
         with open(fname, 'r') as f:
             for line in f:
                 ii = line.index('=')
                 if line[:ii]=='n_gauss': N_GAUSS = int(line[(ii+1):])
+                if line[:ii]=='n_cos': N_COS = int(line[(ii+1):])
                 if line[:ii]=='n_basis': N_BASIS = int(line[(ii+1):])
                 if line[:ii]=='n_kpoints': N_KPOINTS = int(line[(ii+1):])
                 if line[:ii]=='occ': OCC = int(line[(ii+1):])
-                elif line[:ii] == 'V0': 
+                if line[:ii] == 'V0': 
                     low, up = line[(ii+1):].split(':')
                     LOW_V0, HIGH_V0 = float(low), float(up)
-                elif line[:ii] == 'Mu':
+                if line[:ii] == 'Mu':
                     low, up = line[(ii+1):].split(':') 
                     LOW_Mu, HIGH_Mu = float(low), float(up)
-                elif line[:ii] == 'scale':
+                if line[:ii] == 'scale':
                     low, up = line[(ii+1):].split(':')
                     LOW_L, HIGH_L = float(low), float(up)
-        param_gen = kpotential_gen(N_BASIS, N_GAUSS, LOW_V0, HIGH_V0,
-                                   LOW_Mu, HIGH_Mu, LOW_L, HIGH_L, RANDOM_SEED)
+                if line[:ii] == 'Mu_cos':
+                    low, up = line[(ii+1):].split(':') 
+                    LOW_Mu_COS, HIGH_Mu_COS = float(low), float(up)
+
+        parameters = {'n_gauss': N_GAUSS, 'n_cos': N_COS, 'low_V0': LOW_V0, 'high_V0': HIGH_V0, 'low_mu': LOW_Mu,
+                      'high_mu': HIGH_Mu, 'low_sigma': LOW_L, 'high_sigma': HIGH_L, 'low_mu_c': LOW_Mu_COS, 'high_mu_c': HIGH_Mu_COS}
+        param_gen = periodic_potential(N_BASIS, parameters, RANDOM_SEED)
+
         # storage
         POTENTIAL_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)
         DATA_STORAGE = np.zeros((NSAMPLE_PER_PROC, N_BASIS+1), dtype=np.complex64)
 
         for i in range(NSAMPLE_PER_PROC):
-            hamilton_mat, Vq = next(param_gen)
+            hamilton_mat, Vq = next(param_gen())
             T, density, mu = ksolver(N_KPOINTS, N_BASIS, hamilton_mat, OCC)
             DATA_STORAGE[i] = np.array([T, *density], dtype=np.complex64)
             POTENTIAL_STORAGE[i] = np.array([mu, *Vq], dtype=np.complex64)
