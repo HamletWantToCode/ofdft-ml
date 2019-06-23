@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 from scipy.optimize import approx_fprime
 from numpy.testing import assert_array_almost_equal
 from sklearn.datasets import make_regression
@@ -32,4 +32,4 @@ def test_gauss_process_gradient():
                       - sklearn.predict(x_b[np.newaxis, :]))[0] / 2e-3
         numeric.append(partial_gd)
     assert_array_almost_equal(my, np.array(numeric), 4)
-     
+

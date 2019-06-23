@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils import check_array, check_X_y
 from scipy.optimize import minimize
@@ -11,7 +11,7 @@ __all__ = ['GaussProcessRegressor']
 class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def __init__(self,
                  gamma=1,
-                 beta=1.0,
+                 beta=0.1,
                  mean_fn=None,
                  kernel=rbf_kernel,
                  kernel_gd=None,
@@ -29,16 +29,18 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def neg_log_likelihood(self, hyperparams, X, y, index):
         alpha, L, _ = self._fit(hyperparams, X, y, index)
         data_term = -0.5*(y.T @ alpha)
-        K_term = -0.5*np.log(np.diag(L)).sum()
+        K_term = -(np.log(np.diag(L))).sum()
         const_term = -0.5*self._n_dim*np.log(2*np.pi)
         value = -(data_term + K_term + const_term)
         self._history.append(value)
+        # self._history.append([data_term, -K_term])
         return value
 
     def neg_log_likelihood_prime(self, hyperparams, X, y, index):
         alpha, L, K_gd_on_gamma = self._fit(hyperparams, X, y, index)
-        inv_K = cho_solve((L, True), np.eye(self._n_dim)).T
-        reduce_K = np.outer(alpha, alpha) - inv_K 
+        inv_L = np.linalg.inv(L) # cho_solve((L, True), np.eye(self._n_dim)).T
+        inv_K = inv_L.T @ inv_L
+        reduce_K = np.outer(alpha, alpha) - inv_K
         gd_on_gamma = 0.5*np.trace(reduce_K @ K_gd_on_gamma)
         gd_on_beta = 0.5*np.trace(reduce_K)
         return -np.array([gd_on_gamma, gd_on_beta])
@@ -46,7 +48,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def _fit(self, hyperparams, X, y, index):
         gamma, beta = hyperparams
         K, K_gd_on_gamma = self.kernel(gamma, X, X, gradient_on_gamma=True, index=index)
-        K[np.diag_indices_from(K)] += 1e-5
+        # K[np.diag_indices_from(K)] += 1e-5
         K[np.diag_indices_from(K)] += beta
         try:
             L = np.linalg.cholesky(K)
@@ -78,7 +80,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
                            jac=self.neg_log_likelihood_prime,
                            bounds=self.params_bounds,
                            options={'disp': verbose,
-                                    'ftol': 1e-3, 
+                                    'ftol': 1e-5,
                                     'maxiter': 20000})
             if res.success is False:
                 print('optimization failed')
@@ -87,7 +89,7 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         self.coef_, L, _ = self._fit(hyperparams, self.X_train_, self.y_train_, index)
         self.inv_cov_train_ = cho_solve((L, True), np.eye(self._n_dim)).T
         return self
-        
+
     def predict(self, X, return_variance=False, index=None):
         X = check_array(X)
         kT = self.kernel(self.gamma, X, self.X_train_, index=index)
