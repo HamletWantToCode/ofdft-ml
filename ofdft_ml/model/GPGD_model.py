@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 from ofdft_ml.statslib.pca import PrincipalComponentAnalysis as PCA
 from ofdft_ml.statslib.GaussProcess import GaussProcessRegressor as GPR
 from ofdft_ml.statslib.kernel import rbf_kernel, partial_derivative_gp_rbf_kernel
@@ -6,7 +6,7 @@ from ofdft_ml.statslib.kernel import rbf_kernel, partial_derivative_gp_rbf_kerne
 __all__ = ['GPGD_model']
 
 class GPGD_model(object):
-    def __init__(self, n_components=2, gamma=1e-3, beta=1e-8):
+    def __init__(self, n_components=2, gamma=1e-3, beta=1e-6):
         self.n_cmp = n_components
         self.gamma = gamma
         self.beta = beta
@@ -14,39 +14,39 @@ class GPGD_model(object):
     @property
     def gamma(self):
         return self._gamma
-   
+
     @property
     def beta(self):
         return self._beta
 
     @gamma.setter
     def gamma(self, value):
-        if value <= 1 and value >= 1e-8:
+        if value <= 1 and value >= 1e-5:
             self._gamma = value
         else:
             raise ValueError('gamma value should range from 1e-8 to 1')
 
     @beta.setter
     def beta(self, value):
-        if (value <= 1e-5) and (value >= 1e-15):
+        if (value <= 0.1) and (value >= 1e-6):
             self._beta = value
-        elif value < 1e-15:
-            value = 1e-15
-            # raise ValueError('beta value should range from 1e-15 to 1e-5')
+        elif value < 1e-6:
+            value = 1e-6
+            # raise ValueError('beta value should range from 1e-6 to 0.1')
 
     def fit(self, train_X, train_y, train_X_dy):
         pca = PCA(self.n_cmp)
         train_tX = pca.fit_transform(train_X)
         train_tX_dy = pca.transform_gradient(train_X_dy)
-        
+
         estimator = GPR(gamma=self.gamma,
                         beta=self.beta,
                         kernel=rbf_kernel,
                         optimize=True,
-                        params_bounds=((1e-8, 1), (1e-15, 1e-5))) 
+                        params_bounds=((1e-5, 1), (1e-5, 0.1)))
         estimator.fit(train_tX, train_y)
         print('Finish 1st stage fitting....')
-        self.gamma = estimator.gamma        
+        self.gamma = estimator.gamma
         self.beta = estimator.beta
 
         gd_estimator = []
@@ -80,4 +80,4 @@ class GPGD_model(object):
             pred_tX_dy.append(pred_tX_dyi)
         pred_tX_dy = np.transpose(np.array(pred_tX_dy))
         pred_X_dy = self.transformer.inverse_transform_gradient(pred_tX_dy)
-        return pred_X_dy 
+        return pred_X_dy
