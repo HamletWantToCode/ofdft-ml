@@ -32,13 +32,22 @@ class Forward_PCA_transform(object):
             raise ValueError
 
     def __call__(self, data):
-        X = data['feature']
-        DTDX = data['targets'][:, 1:]
-        Ek = data['targets'][:, 0]
+        X = data['features']
+        all_targets = data['targets']
+        if all_targets.ndim > 1:
+            DTDX = data['targets'][:, 1:]
+            Ek = data['targets'][:, 0]
+        else:
+            Ek = all_targets
+        
         if self.tr_mat is None:
             self.fit(X)
         Xt = self.transform(X)
-        DTDXt = DTDX.dot(self.tr_mat)
-        targets_ = np.c_[Ek[:, np.newaxis], DTDXt]
-        data_ = {'feature': Xt, 'targets': targets_}
+        
+        if all_targets.ndim > 1:
+            DTDXt = DTDX.dot(self.tr_mat)
+            targets_ = np.c_[Ek[:, np.newaxis], DTDXt]
+        else:
+            targets_ = Ek
+        data_ = {'features': Xt, 'targets': targets_}
         return data_
