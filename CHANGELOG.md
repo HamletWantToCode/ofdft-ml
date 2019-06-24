@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unrelease]
+### Coming soon
+- 'cross validation'
+- 'model reloading and testing'
 
-## 1.0.0a - 2019-04-24
 ### Added
 - 'ofdft_ml.quantum.utils': add a new class *periodic_potential*
 - Newly designed APIs:
