@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils import check_array, check_X_y
 from scipy.optimize import minimize
-from scipy.linalg import cho_solve
+from scipy.linalg import cho_solve, solve_triangular
 
 from .kernel import rbf_kernel
 
@@ -33,12 +33,11 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
         const_term = -0.5*self._n_dim*np.log(2*np.pi)
         value = -(data_term + K_term + const_term)
         self._history.append(value)
-        # self._history.append([data_term, -K_term])
         return value
 
     def neg_log_likelihood_prime(self, hyperparams, X, y, index):
         alpha, L, K_gd_on_gamma = self._fit(hyperparams, X, y, index)
-        inv_L = np.linalg.inv(L) # cho_solve((L, True), np.eye(self._n_dim)).T
+        inv_L = solve_triangular(L, np.eye(self._n_dim), lower=True)
         inv_K = inv_L.T @ inv_L
         reduce_K = np.outer(alpha, alpha) - inv_K
         gd_on_gamma = 0.5*np.trace(reduce_K @ K_gd_on_gamma)
@@ -48,7 +47,6 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
     def _fit(self, hyperparams, X, y, index):
         gamma, beta = hyperparams
         K, K_gd_on_gamma = self.kernel(gamma, X, X, gradient_on_gamma=True, index=index)
-        # K[np.diag_indices_from(K)] += 1e-5
         K[np.diag_indices_from(K)] += beta
         try:
             L = np.linalg.cholesky(K)
@@ -87,16 +85,17 @@ class GaussProcessRegressor(BaseEstimator, RegressorMixin):
             hyperparams = res.x
         self.gamma, self.beta = hyperparams
         self.coef_, L, _ = self._fit(hyperparams, self.X_train_, self.y_train_, index)
-        self.inv_cov_train_ = cho_solve((L, True), np.eye(self._n_dim)).T
+        inv_L = solve_triangular(L, np.eye(self._n_dim), lower=True)
+        self.inv_K_ = inv_L.T @ inv_L
         return self
 
     def predict(self, X, return_variance=False, index=None):
         X = check_array(X)
         kT = self.kernel(self.gamma, X, self.X_train_, index=index)
         y_pred = self._ytrain_mean + kT @ self.coef_
-        cov_pred = self.kernel(self.gamma, X, X, index=index) - kT @ self.inv_cov_train_ @ kT.T
         if return_variance:
-            return y_pred, np.sqrt(np.diag(cov_pred))
+            y_std = np.sqrt(np.diag(self.kernel(self.gamma, X, X)) - np.eigsum('ij,ij->i', kT @ self.inv_K_, kT))
+            return y_pred, y_std
         else:
             return y_pred
 
