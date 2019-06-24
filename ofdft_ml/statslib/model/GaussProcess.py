@@ -72,7 +72,7 @@ class ScalarGP(BaseGP):
         K = self.kernel_func(train_x, train_x)
         L = np.linalg.cholesky(K + self.noise*np.eye(K.shape[0]))
         
-        self.coef = cho_solve((L, True), train_y)
+        self.coef = cho_solve((L, True), train_y_)
         self._L = L
         self._train_x = train_x
 
