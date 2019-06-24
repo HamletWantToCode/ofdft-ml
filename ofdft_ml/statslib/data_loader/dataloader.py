@@ -1,9 +1,10 @@
+import numpy as np
 import pickle
 from sklearn.model_selection import train_test_split
 
 class Dataset(object):
     def __init__(self, dir_name, test_size, valid_size=None, n_cv=None):
-        # loading dataset 
+        # loading dataset
         with open(dir_name+'density_in_k_2x', 'rb') as f1:
             data1 = pickle.load(f1)
         with open(dir_name+'potential_in_k_2x', 'rb') as f2:
@@ -25,7 +26,7 @@ class Dataset(object):
         self.test_features = split_data[1]
         self.all_train_targets = split_data[2]
         self.test_targets = split_data[3]
-    
+
     def train_validate(self):
         if hasattr(self, 'all_train_features') and hasattr(self, 'all_train_targets'):
             split_data = train_test_split(self.all_train_features,

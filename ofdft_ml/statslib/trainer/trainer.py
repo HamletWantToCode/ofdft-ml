@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 
 class Trainer(object):
     def __init__(self, dataset, model, transformer=None , metrics=None):
@@ -55,4 +55,4 @@ class Trainer(object):
 
 
 
-        
+
