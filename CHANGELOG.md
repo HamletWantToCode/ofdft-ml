@@ -7,8 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ##[Unreleased]
 ### Added
 - 'ofdft_ml.quantum.utils': add a new class *periodic_potential*
+- Newly designed APIs:
+    - 'ofdft_ml.statslib.model': contains the scalarGP and multitaskGP, it's related metric and kernel functions
+    - 'ofdft_ml.statslib.trainer': trainer class that automate the training and validating process
+    - 'ofdft_ml.statslib.base': BaseGP for various GP method, unifying interface
+    - 'ofdft_ml.statslib.data_loader': dataloader that read data from data file and do train-test/train-validate split when required
+    - 'ofdft_ml.statslib.seqmodel': wrapper that will chain scalarGP and multitaskGP together
+
+### Fixed
+- 'ofdft_ml.statslib.GaussProcess': error in computing inverse of K and nll
 
 ### Changed
+- 'ofdft_ml.statslib.pca': 
 
 ### Removed
 - 'ofdft_ml.quantum.utils': remove the *kpotential_gen* function
