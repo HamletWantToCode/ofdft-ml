@@ -6,11 +6,12 @@ from scipy.optimize import minimize
 import warnings
 
 class ScalarGP(BaseGP):
-    def __init__(self, gamma, noise, bounds):
+    def __init__(self, gamma, noise, bounds, mode='train'):
         super(ScalarGP, self).__init__(noise, RBF_Kernel, None)
         self.gamma = gamma
         self.kernel_func = self.kernel(gamma)
         self.bounds = bounds
+        self.mode = mode
         self._history = []
 
     def neg_log_likelihood(self, hyperparameters, train_x, train_y):
@@ -52,21 +53,25 @@ class ScalarGP(BaseGP):
             self._mean = np.mean(train_y)
         train_y_ = train_y - self._mean
 
-        res = minimize(self.neg_log_likelihood,
-                       np.array([self.gamma, self.noise]),
-                       args=(train_x, train_y),
-                       method='L-BFGS-B',
-                       jac=self.neg_log_likelihood_gradient,
-                       bounds=self.bounds,
-                       options={'disp': verbose,
-                                'ftol': 1e-5,
-                                'maxiter': 1000})
+        if self.mode is 'train':
+            res = minimize(self.neg_log_likelihood,
+                        np.array([self.gamma, self.noise]),
+                        args=(train_x, train_y),
+                        method='L-BFGS-B',
+                        jac=self.neg_log_likelihood_gradient,
+                        bounds=self.bounds,
+                        options={'disp': verbose,
+                                    'ftol': 1e-5,
+                                    'maxiter': 1000})
 
-        if res.success:
-            hyperparameters = res.x
-        else:
-            warnings.warn('BFGS not converge successfully, use initial hyperparameter values !')
+            if res.success:
+                hyperparameters = res.x
+            else:
+                warnings.warn('BFGS not converge successfully, use initial hyperparameter values !')
+                hyperparameters = np.array([self.gamma, self.noise])
+        elif self.mode is 'eval':
             hyperparameters = np.array([self.gamma, self.noise])
+
         self.gamma, self.noise = hyperparameters
         self.kernel_func.gamma = self.gamma
         K = self.kernel_func(train_x, train_x)

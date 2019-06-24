@@ -51,3 +51,10 @@ class Forward_PCA_transform(object):
             targets_ = Ek
         data_ = {'features': Xt, 'targets': targets_}
         return data_
+
+class Backward_PCA_transform(object):
+    def __init__(self, forward_transformer):
+        self.tr_mat = forward_transformer.tr_mat
+
+    def __call__(self, targets):
+        return targets @ self.tr_mat.T

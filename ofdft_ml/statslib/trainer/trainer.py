@@ -1,7 +1,7 @@
 import numpy as np
 
 class Trainer(object):
-    def __init__(self, dataset, model, transformer=None , metrics=None):
+    def __init__(self, dataset, model, transformer=None, metrics=None):
         """
         dataset: a Dataset object
         transformer: PCA data transform
@@ -13,8 +13,6 @@ class Trainer(object):
         self.model = model
         self.metrics = metrics
 
-        self.transformation = None
-
     def train(self):
         self.train_data = {'features': self.dataset.train_features,
                            'targets': self.dataset.train_targets}
@@ -22,14 +20,14 @@ class Trainer(object):
             transformed_train_data = self.transformer(self.train_data)
             features = transformed_train_data['features']
             targets = transformed_train_data['targets']
-            self.transformation = self.transformer.tr_mat
+            self.n_cmps = self.transformer.n_cmps
         else:
             features = self.train_data['features']
             targets = self.train_data['targets']
         self.model.fit(features, targets)
         # train results
         self.hyperparameters = [self.model.gamma, self.model.noise]
-        self.summary = {'transformation': self.transformation,
+        self.summary = {'n_components': self.n_cmps,
                         'hyperparameters': self.hyperparameters}
 
         if self.metrics is not None:

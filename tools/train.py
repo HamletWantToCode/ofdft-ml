@@ -1,5 +1,6 @@
 from ofdft_ml.statslib import Dataset, ScalarGP, MultitaskGP, Forward_PCA_transform
 from ofdft_ml.statslib import Trainer
+import pickle
 import json
 import time
 
@@ -29,3 +30,9 @@ datetime = time.strftime('%Y-%m-%d_%H:%M:%S', time.localtime())
 fname = 'train_at_' + datetime
 with open(fname, 'w') as f:
     json.dump(trainer.summary, f)
+model_fname = 'model_at_' + datetime
+with open(model_fname, 'wb') as mf:
+    pickle.dump(model, mf)
+transformer_fname = 'transformer_at_' + datetime
+with open(transformer_fname, 'wb') as tf:
+    pickle.dump(transformer, tf)
