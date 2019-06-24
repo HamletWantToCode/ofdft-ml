@@ -108,7 +108,7 @@ class MultitaskGP(BaseGP):
         coefs = np.zeros((Ks.shape[0], self.n_tasks))
         for i in range(self.n_tasks):
             L = np.linalg.cholesky(Ks[:, :, i] + self.noise*np.eye(Ks.shape[0]))
-            coef = cho_solve((L, True), train_y[:, i])
+            coef = cho_solve((L, True), train_y_[:, i])
             coefs[:, i] = coef
 
         self.coefs = coefs
