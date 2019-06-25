@@ -44,6 +44,10 @@ class Dataset(object):
     def len_test(self):
         return len(self.test_features)
 
+    @property
+    def len_dataset(self):
+        return len(self.features)
+
 def createFolder(directory):
     try:
         if not os.path.exists(directory):

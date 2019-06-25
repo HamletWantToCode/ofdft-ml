@@ -1,14 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import os
 from ofdft_ml.statslib import Model_loader
 
 # dataset
-dir_name = 'datasets/multitask/train/'
+data_dir = 'datasets/multitask/train/'
 # parameter
-param_name = 'summary/train_at_2019-06-25_14:45:51'
+param_dir = 'summary/'
+flist = os.listdir(param_dir)
+flist.sort(key=lambda x: x[9:])
+param_fname = param_dir + flist[0]
 
-loader = Model_loader(dir_name, param_name)
+loader = Model_loader(data_dir, param_fname)
 ml_model = loader.load()
 
 # predict on testing dataset
