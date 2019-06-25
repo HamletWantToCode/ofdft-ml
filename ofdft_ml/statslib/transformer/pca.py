@@ -25,13 +25,7 @@ class Forward_PCA_transform(object):
                     break
             self.tr_mat = U[:, :i]
     
-    def transform(self, X):
-        if self.tr_mat is not None:
-            return (X-self._mean) @ self.tr_mat
-        else:
-            raise ValueError
-
-    def __call__(self, data):
+    def transform(self, data):
         X = data['features']
         all_targets = data['targets']
         if all_targets.ndim > 1:
@@ -40,9 +34,7 @@ class Forward_PCA_transform(object):
         else:
             Ek = all_targets
         
-        if self.tr_mat is None:
-            self.fit(X)
-        Xt = self.transform(X)
+        Xt = (X-self._mean) @ self.tr_mat
         
         if all_targets.ndim > 1:
             DTDXt = DTDX.dot(self.tr_mat)
@@ -51,6 +43,15 @@ class Forward_PCA_transform(object):
             targets_ = Ek
         data_ = {'features': Xt, 'targets': targets_}
         return data_
+
+    def transform_x(self, features):
+        return (features - self._mean) @ self.tr_mat
+
+    def fit_transform(self, data):
+        X = data['features']
+        self.fit(X)
+        return self.transform(data)
+
 
 class Backward_PCA_transform(object):
     def __init__(self, forward_transformer):
