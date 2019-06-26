@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unrelease]
+## 1.0.0-alpha - 2019-06-26
 ### Added
 - 'ofdft_ml.quantum.utils': add a new class *periodic_potential*
 - Newly designed APIs:
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 'ofdft_ml.statslib.GaussProcess': error in computing inverse of K and nll
 
 ### Changed
-- 'ofdft_ml.statslib.pca': 
+- 'ofdft_ml.statslib.pca': divide the original PCA function into *forward* and *backward* 
 
 ### Removed
 - 'ofdft_ml.quantum.utils': remove the *kpotential_gen* function

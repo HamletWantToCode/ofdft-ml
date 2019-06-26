@@ -5,19 +5,19 @@ import os
 from ofdft_ml.statslib import Model_loader
 
 # dataset
-data_dir = 'datasets/multitask/train/'
+data_dir = 'datasets/multitask/'
 # parameter
 param_dir = 'summary/'
 flist = os.listdir(param_dir)
-flist.sort(key=lambda x: x[9:])
-param_fname = param_dir + flist[0]
+flist.sort()
+param_fname = param_dir + flist[-1]
 
-loader = Model_loader(data_dir, param_fname)
+loader = Model_loader(data_dir+'train/', param_fname)
 ml_model = loader.load()
 
 # predict on testing dataset
-test_feature = np.load(dir_name + 'features.npy')
-test_targets = np.load(dir_name + 'targets.npy')
+test_feature = np.load(data_dir + 'test/features.npy')
+test_targets = np.load(data_dir + 'test/targets.npy')
 test_data = {'features': test_feature, 'targets': test_targets}
 
 pred_Ek, pred_Ek_derivative = ml_model(test_feature)
