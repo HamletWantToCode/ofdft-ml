@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import json
 
 class OFDFT(object):
@@ -15,7 +15,7 @@ class OFDFT(object):
         _log['optimization setting'] = {'max_iters': max_iters,
                                         'step': eta,
                                         'gtol': gtol}
-        
+
         func_val = []
         for i in range(max_iters):
             E = self.energy(x, potential)
@@ -31,10 +31,10 @@ class OFDFT(object):
             _log['success'] = 'NO'
             print('optimization failed !')
         _log['history'] = func_val
-        
+
         with open('optim_log', 'w') as f:
             json.dump(_log, f)
-        
+
         return x[:-1]
 
     def energy(self, x, Vx):
@@ -46,9 +46,12 @@ class OFDFT(object):
     def energy_gradient(self, x, Vx):
         rho = x[:-1]
         mu = x[-1]
-        tr_mat = self.KE_func.forward_transformer.tr_mat
-        Vxt = (Vx[np.newaxis, :] - mu) @ tr_mat
-        Vx_ = Vxt @ tr_mat.T
+        if hasattr(self.KE_func, 'forward_transformer'):
+            tr_mat = self.KE_func.forward_transformer.tr_mat
+            Vxt = (Vx[np.newaxis, :] - mu) @ tr_mat
+            Vx_ = Vxt @ tr_mat.T
+        else:
+            Vx_ = (Vx - mu)[np.newaxis, :]
         _, Ek_derivative = self.KE_func(rho)
         E_derivative = Ek_derivative[0] + Vx_[0]
         return np.array([*E_derivative, self.n_particle-(1.0/len(rho))*np.sum(rho)])
@@ -60,6 +63,6 @@ class OFDFT(object):
 # results = minimize(self.energy, rho, args=(potential),
 #                    method='trust-constr',
 #                    jac=self.energy_gradient, hess=BFGS(),
-#                    constraints=[linear_constraint], 
+#                    constraints=[linear_constraint],
 #                    options={'verbose': 1}, bounds=bounds)
 # return results.x
