@@ -36,6 +36,10 @@ class Dataset(object):
         np.save(self.root_name+'test/targets', self.test_targets)
         print('finish saving !')
 
+    def get_sub_train_set(self, train_size):
+        self.all_train_features = self.all_train_features[:train_size]
+        self.all_train_targets = self.all_train_targets[:train_size]
+
     @property
     def len_train(self):
         return len(self.all_train_features)

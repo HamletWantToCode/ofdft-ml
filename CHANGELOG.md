@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- 'ofdft_ml.statslib.Dataset': add *get_sub_train_set* method, that will extract a subset of data from the whole train dataset.
+
 ## 1.0.0-alpha - 2019-06-26
 ### Added
 - 'ofdft_ml.quantum.utils': add a new class *periodic_potential*
