@@ -3,9 +3,13 @@ import json
 from ofdft_ml.statslib import Forward_PCA_transform, Backward_PCA_transform, ScalarGP, MultitaskGP, SeqModel
 
 class Model_loader(object):
-    def __init__(self, train_data_dir, param_fname):
+    def __init__(self, train_data_dir, param_fname, train_size=None):
         train_features = np.load(train_data_dir + 'features.npy')
         train_targets = np.load(train_data_dir + 'targets.npy')
+        if train_size is not None:
+            train_features = train_features[:train_size]
+            train_targets = train_targets[:train_size]
+
         with open(param_fname, 'r') as f:
             parameters = json.load(f)
         n_components = parameters['n_components']
