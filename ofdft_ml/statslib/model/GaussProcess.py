@@ -48,10 +48,13 @@ class ScalarGP(BaseGP):
     def fit(self, train_x, train_y, verbose=False):
         if self.mean_f is not None:
             self._mean = self.mean_f(train_x)
+            print('calculate mean')
         else:
             warnings.warn("use constant mean function")
             self._mean = np.mean(train_y)
         train_y_ = train_y - self._mean
+
+        print(self.model=='train')
 
         if self.mode is 'train':
             res = minimize(self.neg_log_likelihood,
