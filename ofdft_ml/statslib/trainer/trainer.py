@@ -31,42 +31,45 @@ class Trainer(object):
         init_gammas, init_noises = np.meshgrid(start_ups['gamma'], start_ups['noise'])
         hyperparameters = zip(init_gammas.ravel(), init_noises.ravel())
 
-        for metric in self.metrics: 
-            mean_total_error = np.inf
-            tmp_summary = {}
+        parallel = Parallel(n_jobs=self.n_jobs, pre_dispatch=2*self.n_jobs)
 
-            for gamma0, noise0 in hyperparameters:
-                model0 = deepcopy(self.default_model)
-                model0.gamma = gamma0
-                model0.noise = noise0
-        
-                results = Parallel(n_jobs=self.n_jobs)(
-                                    delayed(_cross_validate_score)
-                                    (
-                                        deepcopy(model0), 
-                                        deepcopy(self.default_transformer),
-                                        metric,
-                                        self.dataset.all_train_features,
-                                        self.dataset.all_train_targets,
-                                        train_index, 
-                                        valid_index,
-                                    )
-                                    for train_index, valid_index in kf.split(data_index)
-                                    )
-                results = np.array(results)
-                
-                mean_scalar_error, mean_vector_error = np.mean(results, axis=0)
-                mean_total_error_ = mean_scalar_error + mean_vector_error
+        with parallel:
+            for metric in self.metrics: 
+                mean_total_error = np.inf
+                tmp_summary = {}
 
-                if mean_total_error_ < mean_total_error:
-                    tmp_summary.update({
-                        'starting_point': [gamma0, noise0],
-                        'scalar_error': mean_scalar_error,
-                        'vector_error': mean_vector_error,
-                    })
-                    mean_total_error = mean_total_error_
+                for gamma0, noise0 in hyperparameters:
+                    model0 = deepcopy(self.default_model)
+                    model0.gamma = gamma0
+                    model0.noise = noise0
+            
+                    results = parallel(
+                                        delayed(_cross_validate_score)
+                                        (
+                                            deepcopy(model0), 
+                                            deepcopy(self.default_transformer),
+                                            metric,
+                                            self.dataset.all_train_features,
+                                            self.dataset.all_train_targets,
+                                            train_index, 
+                                            valid_index,
+                                        )
+                                        for train_index, valid_index in kf.split(data_index)
+                                        )
+                    results = np.array(results)
+                    
+                    mean_scalar_error, mean_vector_error = np.mean(results, axis=0)
+                    mean_total_error_ = mean_scalar_error + mean_vector_error
 
-                self.summary[metric.__name__] = tmp_summary
+                    if mean_total_error_ < mean_total_error:
+                        tmp_summary.update({
+                            'starting_point': [gamma0, noise0],
+                            'scalar_error': mean_scalar_error,
+                            'vector_error': mean_vector_error,
+                        })
+                        mean_total_error = mean_total_error_
+
+                    self.summary[metric.__name__] = tmp_summary
 
 def _cross_validate_score(model, transformer, metric, X, y, train_index, valid_index):
     train_features, train_targets = X[train_index], y[train_index]
