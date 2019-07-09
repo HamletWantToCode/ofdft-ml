@@ -63,7 +63,7 @@ class Trainer(object):
 
                     if mean_total_error_ < mean_total_error:
                         tmp_summary.update({
-                            'starting_point': [gamma0, noise0],
+                            'starting_point': {'gamma': gamma0, 'noise': noise0},
                             'scalar_error': mean_scalar_error,
                             'vector_error': mean_vector_error,
                         })
