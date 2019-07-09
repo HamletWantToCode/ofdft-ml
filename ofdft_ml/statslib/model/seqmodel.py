@@ -1,7 +1,7 @@
 import numpy as np 
 
 class SeqModel(object):
-    def __init__(self, gamma=1, noise=0.1, bounds=None, scalar_model=None, vector_model=None):
+    def __init__(self, gamma=1, noise=0.01, bounds=None, scalar_model=None, vector_model=None):
         self._gamma = gamma
         self._noise = noise
         self.bounds = bounds
