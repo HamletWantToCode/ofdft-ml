@@ -43,13 +43,13 @@ class SeqModel(object):
         else:
             raise ValueError
         
-    @property
-    def noise(self):
-        return self._noise
+    # @property
+    # def noise(self):
+    #     return self._noise
 
-    @noise.setter
-    def noise(self, v):
-        if (v>self.bounds[1][0]) and (v<self.bounds[1][1]):
-            self._noise = v
-        else:
-            raise ValueError
+    # @noise.setter
+    # def noise(self, v):
+    #     if (v>self.bounds[1][0]) and (v<self.bounds[1][1]):
+    #         self._noise = v
+    #     else:
+    #         raise ValueError
