@@ -36,7 +36,6 @@ class Trainer(object):
             tmp_summary = {}
 
             for gamma0, noise0 in hyperparameters:
-                print(gamma0, noise0)
                 model0 = deepcopy(self.default_model)
                 model0.gamma = gamma0
                 model0.noise = noise0
@@ -63,10 +62,10 @@ class Trainer(object):
                     tmp_summary.update({
                         'starting_point': [gamma0, noise0],
                         'scalar_error': mean_scalar_error,
-                        'vector_error': mean_vector_error
+                        'vector_error': mean_vector_error,
                     })
                     mean_total_error = mean_total_error_
-                    
+
                 self.summary[metric.__name__] = tmp_summary
 
 def _cross_validate_score(model, transformer, metric, X, y, train_index, valid_index):

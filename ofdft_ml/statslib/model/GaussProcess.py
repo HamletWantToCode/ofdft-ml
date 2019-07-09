@@ -54,9 +54,7 @@ class ScalarGP(BaseGP):
             self._mean = np.mean(train_y)
         train_y_ = train_y - self._mean
 
-        print(self.model=='train')
-
-        if self.mode is 'train':
+        if self.mode == 'train':
             res = minimize(self.neg_log_likelihood,
                         np.array([self.gamma, self.noise]),
                         args=(train_x, train_y),
@@ -72,7 +70,7 @@ class ScalarGP(BaseGP):
             else:
                 warnings.warn('BFGS not converge successfully, use initial hyperparameter values !')
                 hyperparameters = np.array([self.gamma, self.noise])
-        elif self.mode is 'eval':
+        elif self.mode == 'eval':
             hyperparameters = np.array([self.gamma, self.noise])
 
         self.gamma, self.noise = hyperparameters

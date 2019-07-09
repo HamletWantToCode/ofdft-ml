@@ -1,13 +1,18 @@
 import numpy as np 
 
 class SeqModel(object):
-    def __init__(self, gamma=1, noise=0.1, bounds=None, scalar_model=None, vector_model=None, mode='train'):
+    def __init__(self, gamma=1, noise=0.1, bounds=None, scalar_model=None, vector_model=None):
         self._gamma = gamma
         self._noise = noise
         self.bounds = bounds
         self.scalar_model = scalar_model
         self.vector_model = vector_model
-        self.mode = mode
+
+    def train(self):
+        self.mode = 'train'
+
+    def eval(self):
+        self.mode = 'eval'
 
     def fit(self, train_x, train_y):
         model1 = self.scalar_model(self.gamma, self.noise, self.bounds, self.mode)
